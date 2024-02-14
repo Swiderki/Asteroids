@@ -45,12 +45,13 @@ export class MyGame extends Engine {
     w: 1,
   };
   flame;
-
   gui: GUI;
   resultText: GUIText;
   bestResultText: GUIText;
   icons: Icon[];
   lifes: number = 3;
+  isShooting: boolean = false;
+  isTeleporting: boolean = false; 
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -235,7 +236,34 @@ export class MyGame extends Engine {
 
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 256;
+    if (this.keysPressed.has("w")) {
+      this.flame.obj.setPosition(
+        this.spaceship.obj.position.x,
+        this.spaceship.obj.position.y,
+        this.spaceship.obj.position.z
+      );
+      const forwardVector = { x: 0, y: 1, z: 0 };
+      let direction = { x: 0, y: 0, z: 0 };
 
+      QuaternionUtils.rotateVector(
+        this.spaceship.rotation,
+        forwardVector,
+        direction
+      );
+      const speed = 0.02
+      direction.x *= speed;
+      direction.y *= speed;
+      direction.z *= speed;
+      const deltaVelocity = Vector.divide(direction, this.spaceship.obj.mass);
+      direction = Vector.add(direction, deltaVelocity)
+
+      this.flame.obj.velocity.x += direction.x;
+      this.flame.obj.velocity.y += direction.y;
+      this.flame.obj.velocity.z += direction.z;
+      this.spaceship.obj.velocity.x += direction.x;
+      this.spaceship.obj.velocity.y += direction.y;
+      this.spaceship.obj.velocity.z += direction.z;
+    }
     if (this.keysPressed.has("a")) {
       QuaternionUtils.setFromAxisAngle(
         this.rotationQuaternion,
@@ -279,7 +307,8 @@ export class MyGame extends Engine {
       this.spaceship.obj.applyQuaternion(this.rotationQuaternion);
       this.flame.obj.applyQuaternion(this.rotationQuaternion);
     }
-    if (this.keysPressed.has("l")) {
+    if (this.keysPressed.has("l") && !this.isTeleporting) {
+      this.isTeleporting = true; 
       const x = Math.random() * 20 - 10;
       const y = Math.random() * 10 - 5;
       this.currentScene.removeGameObject(this.spaceship.id);
@@ -291,9 +320,13 @@ export class MyGame extends Engine {
         this.spaceship.id = this.currentScene.addGameObject(this.spaceship.obj)!;
         this.flame.id = this.currentScene.addGameObject(this.flame.obj)!;
       }, 700);
+      setTimeout(() => {
+        this.isTeleporting = false;
+      }, 2100);
     }
-    if (this.keysPressed.has("k")) {
+    if (this.keysPressed.has("k") && !this.isShooting) {
       console.log("xd");
+      this.isShooting = true;
       const bullet = new Bullet(
         [
           this.spaceship.obj.position.x,
@@ -324,8 +357,11 @@ export class MyGame extends Engine {
         }
       )}
 
-      console.log(this.spaceship.obj.position);
+      setTimeout(() => {
+        this.isShooting = false;
+      }, 500);
     }
+
   }
 
   handleKeyDown(e: KeyboardEvent) {
@@ -435,34 +471,7 @@ export class MyGame extends Engine {
   override Update(): void {
     this.handleSpaceshipMove()
     super.Update();
-    if (this.keysPressed.has("w")) {
-      this.flame.obj.setPosition(
-        this.spaceship.obj.position.x,
-        this.spaceship.obj.position.y,
-        this.spaceship.obj.position.z
-      );
-      const forwardVector = { x: 0, y: 1, z: 0 };
-      let direction = { x: 0, y: 0, z: 0 };
 
-      QuaternionUtils.rotateVector(
-        this.spaceship.rotation,
-        forwardVector,
-        direction
-      );
-      const speed = 0.02
-      direction.x *= speed;
-      direction.y *= speed;
-      direction.z *= speed;
-      const deltaVelocity = Vector.divide(direction, this.spaceship.obj.mass);
-      direction = Vector.add(direction, deltaVelocity)
-
-      this.flame.obj.velocity.x += direction.x;
-      this.flame.obj.velocity.y += direction.y;
-      this.flame.obj.velocity.z += direction.z;
-      this.spaceship.obj.velocity.x += direction.x;
-      this.spaceship.obj.velocity.y += direction.y;
-      this.spaceship.obj.velocity.z += direction.z;
-    }
     if (this.currentScene != null) {
       const currentTime = Date.now();
 
