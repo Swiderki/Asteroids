@@ -12,15 +12,19 @@ export default class Ufo extends PhysicalGameObject {
     bullets: Map<number, UfoBullet> = new Map();
     spaceship: Spaceship;
     game: MyGame;
+    level: "hard" | "easy";
     shots = 2;
-    constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, currentScene?: Scene, spaceship?: Spaceship, game?: MyGame) {
+    points: number;
+    constructor(level: "hard" | "easy", position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, currentScene?: Scene, spaceship?: Spaceship, game?: MyGame, points? : number) {
       super(`src/asteroids/objects/obj/ufo.obj`, { position, size, rotation });
       this.currentScene = currentScene!;
       console.log(currentScene)
       this.spaceship = spaceship!;
       this.game = game!;
-      this.boxCollider = [{x: -0.4, y: 0.37, z: 0}, {x: 0.4, y: -0.17, z: -1}];
+      this.boxCollider = level == "hard" ?  [{x: -0.31, y: 0.3, z: 0}, {x: 0.35, y: -0.13, z: -1}] : [{x: -0.4, y: 0.37, z: 0}, {x: 0.4, y: -0.17, z: -1}]
+      this.points = points!;
       this.showBoxcollider = true;
+      this.level = level;
     }
     override updatePhysics(deltaTime: number): void {
       super.updatePhysics(deltaTime);
@@ -35,19 +39,19 @@ export default class Ufo extends PhysicalGameObject {
       if (this.currentScene == null) {
         throw new Error("Main scene must be set first.");
       }
-    
-      // Generowanie losowego kąta yaw (odchylenia) tylko dla rotacji wokół osi Z
-      const yaw = Math.random() * Math.PI * 2; // 0 do 360 stopni w radianach
-    
-      // Konwersja yaw na kwaternion dla rotacji wokół osi Z
-      const w = Math.cos(yaw * 0.5);
-      const z = Math.sin(yaw * 0.5);
-    
-      // Kwaternion rotacji tylko w osiach x i y jest teraz zredukowany do rotacji wokół osi Z
-      // x i y są równe 0, ponieważ rotacja jest tylko wokół osi Z
-      const quaternion = { x: 0, y: 0, z: z, w: w };
-    
-      // Tworzenie pocisku z kwaternionem rotacji
+      const quaternion = { x: 0, y: 0, z: 0, w: 1 };
+      if(this.level == "hard") {
+        // TODO: Add shooting
+      }else{
+        const yaw = Math.random() * Math.PI * 2; 
+        const w = Math.cos(yaw * 0.5);
+        const z = Math.sin(yaw * 0.5);
+        quaternion.z = z
+        quaternion.w = w
+      }
+
+  
+  // Add a random spread that decreases as totalTime increases
       const bullet = new UfoBullet(
         [this.position.x, this.position.y, this.position.z],
         [0.01, 0.01, 0.01],
@@ -67,7 +71,4 @@ export default class Ufo extends PhysicalGameObject {
         new UfoBulletPlayerOverlap(this.spaceship, bullet, this.game)
       );
     }
-    
-    
-
   }

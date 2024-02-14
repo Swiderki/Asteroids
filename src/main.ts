@@ -52,6 +52,7 @@ export class MyGame extends Engine {
   lifes: number = 3;
   isShooting: boolean = false;
   isTeleporting: boolean = false;
+  lastUfoLevel: "hard" | "easy" = "hard";
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -212,7 +213,7 @@ export class MyGame extends Engine {
     );
   }
 
-  createRandomUfo() {
+  createRandomUfo(level: "hard" | "easy") {
     if (this.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
@@ -249,15 +250,17 @@ export class MyGame extends Engine {
         v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
     );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
-
+    const size: [number,number,number] = level == "hard" ? [0.008, 0.008, 0.008] : [0.01, 0.01, 0.01];
     // Tworzenie asteroidy
     const ufo = new Ufo(
+      level,
       position,
-      [0.01, 0.01, 0.01],
+      size,
       [0, 0, 0],
       this.currentScene,
       this.spaceship.obj,
-      this
+      this,
+      Number(this.resultText.text)
     );
     ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const ufoId = this.currentScene.addGameObject(ufo);
@@ -507,9 +510,9 @@ export class MyGame extends Engine {
   override Update(): void {
     this.handleSpaceshipMove();
     super.Update();
+    const currentTime = Date.now();
 
     if (this.currentScene.id == this.GUIScene) {
-      const currentTime = Date.now();
 
       if (currentTime - this.lastAsteroidSpawnTime >= 1500) {
         this.createRandomAsteroid(
@@ -519,10 +522,16 @@ export class MyGame extends Engine {
 
         this.lastAsteroidSpawnTime = currentTime;
       }
-      if (currentTime - this.lastUfoSpawnTime >= 1000) {
-        // this.createRandomUfo();
-        this.lastUfoSpawnTime = currentTime;
+    }
+    if (currentTime - this.lastUfoSpawnTime >= 2000) {
+      if(this.lastUfoLevel == "hard" && Number(this.resultText.text) < 40000) {
+        this.createRandomUfo("hard");
+        this.lastUfoLevel = "easy";
+      }else {
+        this.createRandomUfo("hard");
+        this.lastUfoLevel = "hard";
       }
+      this.lastUfoSpawnTime = currentTime;
     }
   }
   changeResultText(text: string) {
