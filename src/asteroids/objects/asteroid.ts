@@ -25,10 +25,13 @@ export default class Asteroids extends PhysicalGameObject {
   }
 
   checkPosition(): void {
+    if (!this.mustBeTeleported) return;
+
     let deltaX = 0;
     let deltaY = 0;
 
-    console.log("dupa");
+    console.log(this.canvasWidth)
+    
 
     if (this.position.x > this.canvasWidth) {
       deltaX = -(this.canvasWidth * 2);

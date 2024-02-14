@@ -141,8 +141,8 @@ export class MyGame extends Engine {
     const ast = new Asteroid(
       Math.floor(Math.random() * 15) + 1,
       asteroidType,
-      this.width,
-      this.height,
+      16,
+      8,
       true,
       position,
       [0.01, 0.01, 0.01]
@@ -201,7 +201,7 @@ export class MyGame extends Engine {
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
 
     // Tworzenie asteroidy
-    const ast = new Asteroid(size, type, this.width, this.height, mustBeTeleported, position, [0.01, 0.01, 0.01]);
+    const ast = new Asteroid(size, type, 16, 8, mustBeTeleported, position, [0.01, 0.01, 0.01]);
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const astId = this.currentScene.addGameObject(ast);
 
