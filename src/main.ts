@@ -9,13 +9,15 @@ import Asteroid from "./asteroids/objects/asteroid";
 import Spaceship from "./asteroids/objects/spaceship";
 import Bullet from "./asteroids/objects/bullet";
 import Flame from "./asteroids/objects/flame";
+import Ufo from "./asteroids/objects/ufo";
 import { QuaternionUtils } from "drake-engine";
 import { Camera } from "drake-engine";
 import { Vector } from "drake-engine";
 import { AsteroidPlayerOverlap } from "./AsteroidPlayerOverlap";
 import { BulletAsteroidOverlap } from "./BulletAsteroidOverlap";
 import { StartButton } from "./StartButton";
-
+import { UfoPlayerOverlap } from "./UfoPlayerOverlap";
+import { BulletUfoOverlap } from "./BulletUfoOverlap";
 // import Asteroid from "./asteroids/objects/asteroid";
 // import Spaceship from "./asteroids/objects/spaceship";
 // import Bullet from "./asteroids/objects/bullet";
@@ -32,8 +34,10 @@ export class MyGame extends Engine {
   startButton: Button | null = null;
   bullets: Bullet[] = [];
   asteroids: Map<number, Asteroid> = new Map();
+  ufos: Map<number, Ufo> = new Map();
   keysPressed: Set<string> = new Set();
   lastAsteroidSpawnTime: number = Date.now();
+  lastUfoSpawnTime: number = Date.now();
   rotationQuaternion: { x: number; y: number; z: number; w: number } = {
     x: 0,
     y: 0,
@@ -178,6 +182,57 @@ export class MyGame extends Engine {
     );
   }
 
+  createRandomUfo() {
+    if (this.currentScene == null) {
+      throw new Error("Main scene must be set first.");
+    }
+
+
+    const edge = ["left", "right", "top", "bottom"][
+      Math.floor(Math.random() * 4)
+    ];
+    let position: [number, number, number];
+    if (edge === "left") {
+      position = [-18, Math.random() * 16 - 8, 0];
+    } else if (edge === "right") {
+      position = [18, Math.random() * 16 - 8, 0];
+    } else if (edge === "top") {
+      position = [Math.random() * 36 - 18, 8, 0];
+    } else {
+      // bottom
+      position = [Math.random() * 36 - 18, -8, 0];
+    }
+
+    // Losowanie punktu docelowego, który nie jest środkiem
+    let targetPosition;
+    do {
+      targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
+    } while (targetPosition[0] === 0 && targetPosition[1] === 0);
+
+    // Losowanie i obliczanie wektora prędkości
+    const velocityMagnitude = Math.random() * 6 + 3;
+    const velocityDirection = [
+      targetPosition[0] - position[0],
+      targetPosition[1] - position[1],
+    ];
+    const normalizedVelocity = velocityDirection.map(
+      (v) =>
+        v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
+    const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
+
+    // Tworzenie asteroidy
+    const ufo = new Ufo(position, [0.01, 0.01, 0.01], [0, 0, 0], this.currentScene, this.spaceship.obj, this);
+    ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
+    const ufoId = this.currentScene.addGameObject(ufo);
+
+    this.ufos.set(ufoId, ufo);
+
+    this.currentScene.addOverlap(
+      new UfoPlayerOverlap(this.spaceship.obj, ufo, this)
+    );
+  }
+
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 16;
 
@@ -263,7 +318,11 @@ export class MyGame extends Engine {
           const ov = new BulletAsteroidOverlap(bullet, el, bulletID, k, this);
           this.currentScene.addOverlap(ov);
         });
-      }
+        this.ufos.forEach((el, k) => {
+          const ov = new BulletUfoOverlap(bullet, el, bulletID, k, this);
+          this.currentScene.addOverlap(ov);
+        }
+      )}
 
       console.log(this.spaceship.obj.position);
     }
@@ -371,7 +430,7 @@ export class MyGame extends Engine {
         this.startButton!.border.left.color = color;
         this.startButton!.border.right.color = color;
       }
-    });
+    });    
   }
   override Update(): void {
     super.Update();
@@ -409,6 +468,10 @@ export class MyGame extends Engine {
       if (currentTime - this.lastAsteroidSpawnTime >= 1500) {
         this.createRandomAsteroid();
         this.lastAsteroidSpawnTime = currentTime;
+      }
+      if(currentTime - this.lastUfoSpawnTime >= 1000){
+        this.createRandomUfo();
+        this.lastUfoSpawnTime = currentTime;
       }
 
       // console.log([...this.currentScene.gameObjects.values()][0])

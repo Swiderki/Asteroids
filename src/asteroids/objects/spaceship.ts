@@ -8,6 +8,7 @@ export default class Spaceship extends PhysicalGameObject {
 
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
     super(`src/asteroids/objects/obj/spaceship.obj`, { position, size, rotation });
+    this.showBoxcollider = true;
   }
 
   override updatePhysics(deltaTime: number): void {
