@@ -126,6 +126,7 @@ export class MyGame extends Engine {
       ];
 
       this.scenes.get(this.gameScene!)!.addGameObject(this.spaceship.obj);
+      this.spaceShipKilled = false;
     }, 2000);
   }
 
@@ -188,7 +189,7 @@ export class MyGame extends Engine {
       position,
       [0.01, 0.01, 0.01]
     );
-    // ast.showBoxcollider = true;
+    ast.showBoxcollider = true;
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const astId = this.currentScene.addGameObject(ast);
 
@@ -314,7 +315,7 @@ export class MyGame extends Engine {
 
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 256;
-    if (this.keysPressed.has("w") && this.currentScene.id != this.GUIScene) {
+    if (this.keysPressed.has("w") && this.currentScene.id != this.GUIScene  && !this.spaceShipKilled) {
       this.flame.obj.setPosition(
         this.spaceship.obj.position.x,
         this.spaceship.obj.position.y,
@@ -342,7 +343,7 @@ export class MyGame extends Engine {
       this.spaceship.obj.velocity.y += direction.y;
       this.spaceship.obj.velocity.z += direction.z;
     }
-    if (this.keysPressed.has("a") && this.currentScene.id != this.GUIScene) {
+    if (this.keysPressed.has("a") && this.currentScene.id != this.GUIScene && !this.spaceShipKilled) {
       QuaternionUtils.setFromAxisAngle(
         this.rotationQuaternion,
         { x: 0, y: 0, z: 1 },
@@ -385,7 +386,7 @@ export class MyGame extends Engine {
       this.spaceship.obj.applyQuaternion(this.rotationQuaternion);
       this.flame.obj.applyQuaternion(this.rotationQuaternion);
     }
-    if (this.keysPressed.has("l") && !this.isTeleporting) {
+    if (this.keysPressed.has("l") && !this.isTeleporting && !this.spaceShipKilled) {
       this.isTeleporting = true;
       const x = Math.random() * 20 - 10;
       const y = Math.random() * 10 - 5;
@@ -405,7 +406,7 @@ export class MyGame extends Engine {
         this.isTeleporting = false;
       }, 2100);
     }
-    if (this.keysPressed.has("k") && !this.isShooting) {
+    if (this.keysPressed.has("k") && !this.isShooting && !this.spaceShipKilled && this.currentScene.id == this.gameScene) {
       if (this.isTeleporting) return;
       this.isShooting = true;
       const bullet = new Bullet(
@@ -423,7 +424,7 @@ export class MyGame extends Engine {
         { x: -0.1, y: -0.1, z: 0 },
         { x: 0.1, y: 0.1, z: -1 },
       ];
-      // bullet.showBoxcollider = true;
+      bullet.showBoxcollider = true;
       const bulletID = this.currentScene.addGameObject(bullet);
 
       if (this.currentScene.id == this.gameScene) {
