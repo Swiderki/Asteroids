@@ -108,6 +108,10 @@ export class MyGame extends Engine {
     this.setCurrentScene(this.gameScene!);
   }
 
+  spawnParticles() {
+    
+  }
+
   createRandomAsteroidAtPosition(
     asteroidType: "l" | "m" | "s",
     position: [number, number, number]
