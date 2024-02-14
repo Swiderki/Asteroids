@@ -16,7 +16,7 @@ export default class Bullet extends PhysicalGameObject {
     this.rotationQuaternion.x = rotationQuaternion!.x;
     this.rotationQuaternion.y = rotationQuaternion!.y;
     this.rotationQuaternion.z = rotationQuaternion!.z;
-    this.lifeTime = 0.75;
+    this.lifeTime = 0.4;
     this.mainScene = mainScene!;
     console.log(mainScene)
     this.showBoxcollider = true;
@@ -27,7 +27,7 @@ export default class Bullet extends PhysicalGameObject {
     const direction = { x: 0, y: 0, z: 0 };
 
     QuaternionUtils.rotateVector(this.rotationQuaternion, forwardVector, direction);
-    const speed = 9;
+    const speed = 20;
     direction.x *= speed;
     direction.y *= speed;
     direction.z *= speed;
