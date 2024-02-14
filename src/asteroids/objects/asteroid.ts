@@ -13,10 +13,16 @@ export default class Asteroids extends PhysicalGameObject {
     else if (asteroidSize == "m") this.boxCollider = [{x: -1, y: 1, z: 0}, {x: 1, y: -1, z: -1}];
     else this.boxCollider = [{x: -2, y: 2, z: 0}, {x: 2, y: -2, z: -1}];
 
+    this.boxCollider[0].x *= 0.8;
+    this.boxCollider[0].y *= 0.8;
+
+    this.boxCollider[1].x *= 0.8;
+    this.boxCollider[1].y *= 0.8;
+
     this.mustBeTeleported = mustBeTeleported;
     this.canvasHeight = canvasHeight;
     this.canvasWidth = canvasWidth;
-    // this.showBoxcollider = true;
+    this.showBoxcollider = true;
   }
 
   override updatePhysics(deltaTime: number): void {
