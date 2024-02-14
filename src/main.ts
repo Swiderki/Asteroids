@@ -234,7 +234,7 @@ export class MyGame extends Engine {
   }
 
   handleSpaceshipMove() {
-    const rotationAmount = Math.PI / 16;
+    const rotationAmount = Math.PI / 256;
 
     if (this.keysPressed.has("a")) {
       QuaternionUtils.setFromAxisAngle(
@@ -433,6 +433,7 @@ export class MyGame extends Engine {
     });    
   }
   override Update(): void {
+    this.handleSpaceshipMove()
     super.Update();
     if (this.keysPressed.has("w")) {
       this.flame.obj.setPosition(
