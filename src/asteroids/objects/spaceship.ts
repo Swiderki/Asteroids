@@ -5,6 +5,8 @@ export default class Spaceship extends PhysicalGameObject {
   canvasWidth: number = 11;
   canvasHeight: number = 6;
   maxVelocity: number = 5; // Maksymalna prędkość statku
+  isBlinking: boolean = false;
+  normalColor: boolean = true;
 
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
     super(`src/asteroids/objects/obj/spaceship.obj`, { position, size, rotation });
@@ -31,6 +33,33 @@ export default class Spaceship extends PhysicalGameObject {
 
     // Sprawdzenie i ewentualna korekta pozycji statku
     this.checkPosition();
+  }
+
+  runBlinking() {
+    this.isBlinking = true;
+
+    const blink = () => {
+      if (this.normalColor) {
+        for (let i = 0; i<5; i++) this.setLineColor(i, "red");
+        this.normalColor = false;
+      }
+
+      else {
+        for (let i = 0; i<5; i++) this.setLineColor(i, "white");
+        this.normalColor = true;
+      }
+      
+      if (this.isBlinking) setTimeout(() => blink(), 100);
+      else for (let i = 0; i<5; i++) this.setLineColor(i, "white");
+    };
+
+    setTimeout(() => {
+      for (let i = 0; i<5; i++) this.setLineColor(i, "white");
+      this.isBlinking = false;
+      this.normalColor = true;
+    }, 3000);
+
+    blink();
   }
 
   limitVelocity(): void {

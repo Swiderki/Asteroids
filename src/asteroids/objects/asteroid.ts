@@ -36,9 +36,6 @@ export default class Asteroids extends PhysicalGameObject {
     let deltaX = 0;
     let deltaY = 0;
 
-    console.log(this.canvasWidth)
-    
-
     if (this.position.x > this.canvasWidth) {
       deltaX = -(this.canvasWidth * 2);
     } else if (this.position.x < -this.canvasWidth) {

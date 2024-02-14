@@ -1,34 +1,24 @@
 import _default from "drake-engine";
-import { Engine } from "drake-engine";
-import { Scene } from "drake-engine";
-import { GUI } from "drake-engine";
-import { GUIText } from "drake-engine";
-import { Button } from "drake-engine";
-import { Icon } from "drake-engine";
+import { Engine, Scene, GUI, GUIText, Button, Icon, QuaternionUtils, Camera, Vector } from "drake-engine";
+
 import Asteroid from "./asteroids/objects/asteroid";
 import Spaceship from "./asteroids/objects/spaceship";
 import Bullet from "./asteroids/objects/bullet";
 import Flame from "./asteroids/objects/flame";
 import Ufo from "./asteroids/objects/ufo";
-import { QuaternionUtils } from "drake-engine";
-import { Camera } from "drake-engine";
-import { Vector } from "drake-engine";
 import { AsteroidPlayerOverlap } from "./AsteroidPlayerOverlap";
 import { BulletAsteroidOverlap } from "./BulletAsteroidOverlap";
 import { StartButton } from "./StartButton";
 import { UfoPlayerOverlap } from "./UfoPlayerOverlap";
 import { BulletUfoOverlap } from "./BulletUfoOverlap";
-// import Asteroid from "./asteroids/objects/asteroid";
-// import Spaceship from "./asteroids/objects/spaceship";
-// import Bullet from "./asteroids/objects/bullet";
-// import Flame from "./asteroids/objects/flame";
-const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 
+const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 
 export class MyGame extends Engine {
   spaceship;
-  mainScene: Scene | null = null;
+  hasAlreadyScoreText: boolean = false;
+  spaceShipKilled: boolean = false;
   gameScene: number | null = null;
   GUIScene: number | null = null;
   startButton: Button | null = null;
@@ -56,6 +46,8 @@ export class MyGame extends Engine {
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
+
+    // Declaring spaceship
     this.flame = {
       obj: new Flame([0, 0, 0], [0.01, 0.01, 0.01]),
       rotation: { x: 0, y: 0, z: 0, w: 1 },
@@ -71,8 +63,6 @@ export class MyGame extends Engine {
       { x: 0.3, y: -0.3, z: -1 },
     ];
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
-    // !!!
-    // this.gui.hideCursor = true;
 
     // Initialize GUI elements
     this.resultText = new GUIText("00", 35, "Arial", "white", 100);
@@ -100,8 +90,6 @@ export class MyGame extends Engine {
         "white"
       ),
     ];
-
-    // this.spaceship.obj.showBoxcollider = true;
   }
 
   changeScene() {
@@ -110,6 +98,54 @@ export class MyGame extends Engine {
 
   spawnParticles() {
     
+  }
+
+  runEnd() {
+    this.spaceship.obj.kill();
+    this.spaceShipKilled = true;
+    setTimeout(() => {
+      this.scenes.get(this.gameScene!)!.gameObjects.forEach(obj => obj.kill());
+      this.endGame(parseInt(this.resultText.text));
+      this.resultText.text = "0";
+      this.lifes = 3;
+      this.changeLifeIcons(this.lifes);
+
+      this.flame = {
+        obj: new Flame([0, 0, 0], [0.01, 0.01, 0.01]),
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        id: 0,
+      };
+      this.spaceship = {
+        obj: new Spaceship([0, 0, 0], [0.01, 0.01, 0.01]),
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        id: 0,
+      };
+      this.spaceship.obj.boxCollider = [
+        { x: -0.2, y: 0.3, z: 0 },
+        { x: 0.3, y: -0.3, z: -1 },
+      ];
+
+      this.scenes.get(this.gameScene!)!.addGameObject(this.spaceship.obj);
+    }, 2000);
+  }
+
+  endGame(score: number) {
+    const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
+    const scoreTitle = new GUIText(`Your score was: ${score}`, 18, "monospace", "red", 700);
+
+    endGameTitle.position.y = 30;
+    endGameTitle.position.x = (this.width - endGameTitle.width)/2;
+
+    scoreTitle.position.y = endGameTitle.height + scoreTitle.height + 20;
+    scoreTitle.position.x = (this.width - scoreTitle.width)/2;
+
+    if (!this.hasAlreadyScoreText) {
+      this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(endGameTitle);
+      this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(scoreTitle);
+    }
+    
+    this.hasAlreadyScoreText = true;
+    this.setCurrentScene(this.GUIScene!);
   }
 
   createRandomAsteroidAtPosition(
@@ -278,7 +314,7 @@ export class MyGame extends Engine {
 
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 256;
-    if (this.keysPressed.has("w")) {
+    if (this.keysPressed.has("w") && this.currentScene.id != this.GUIScene) {
       this.flame.obj.setPosition(
         this.spaceship.obj.position.x,
         this.spaceship.obj.position.y,
@@ -306,7 +342,7 @@ export class MyGame extends Engine {
       this.spaceship.obj.velocity.y += direction.y;
       this.spaceship.obj.velocity.z += direction.z;
     }
-    if (this.keysPressed.has("a")) {
+    if (this.keysPressed.has("a") && this.currentScene.id != this.GUIScene) {
       QuaternionUtils.setFromAxisAngle(
         this.rotationQuaternion,
         { x: 0, y: 0, z: 1 },
@@ -381,7 +417,7 @@ export class MyGame extends Engine {
         [0.5, 0.5, 0.5],
         [0, 0, 0],
         this.spaceship.rotation,
-        this.mainScene!
+        this.scenes.get(this.gameScene!)!
       );
       bullet.boxCollider = [
         { x: -0.1, y: -0.1, z: 0 },
@@ -390,7 +426,7 @@ export class MyGame extends Engine {
       // bullet.showBoxcollider = true;
       const bulletID = this.currentScene.addGameObject(bullet);
 
-      if (this.currentScene == this.mainScene) {
+      if (this.currentScene.id == this.gameScene) {
         this.asteroids.forEach((el, k) => {
           console.log("test");
           const ov = new BulletAsteroidOverlap(bullet, el, bulletID, k, this);
@@ -404,7 +440,7 @@ export class MyGame extends Engine {
 
       setTimeout(() => {
         this.isShooting = false;
-      }, 500);
+      }, 400);
     }
   }
 
@@ -428,14 +464,11 @@ export class MyGame extends Engine {
     const camera = new Camera(60, 0.1, 1000, [0, 0, -10], [0, 0, 1]);
 
     const mainScene = new Scene();
-    this.mainScene = mainScene;
 
     const mainSceneGUI = new GUI(
       this.getCanvas,
       this.getCanvas.getContext("2d")!
     );
-    //!!!
-    // mainSceneGUI.hideCursor = true;
 
     this.resultText.position = { x: 250, y: 30 };
     this.bestResultText.position = { x: 600, y: 30 };

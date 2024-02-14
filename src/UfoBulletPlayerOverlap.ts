@@ -14,10 +14,14 @@ export class UfoBulletPlayerOverlap extends Overlap {
   }
 
   override onOverlap(): void {
+    if (this.game.spaceship.obj.isBlinking) return;
     if (!this.game.currentScene) return;
     if (this.collised) return;
     this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);
+
+    if (this.game.lifes <= 0) this.game.runEnd();
+    else this.game.spaceship.obj.runBlinking();
   }
 }
