@@ -20,5 +20,9 @@ export class StartButton extends Button {
   override onClick(): void {
     this.game.changeScene();
     this.game.asteroids.clear();
+    this.game.createRandomAsteroid("l", true);
+    this.game.createRandomAsteroid("l", true);
+    this.game.createRandomAsteroid("l", true);
+    this.game.createRandomAsteroid("l", true);
   }
 }
