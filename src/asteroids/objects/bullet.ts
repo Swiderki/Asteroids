@@ -16,7 +16,7 @@ export default class Bullet extends PhysicalGameObject {
     this.rotationQuaternion.x = rotationQuaternion!.x;
     this.rotationQuaternion.y = rotationQuaternion!.y;
     this.rotationQuaternion.z = rotationQuaternion!.z;
-    this.lifeTime = 1.5;
+    this.lifeTime = 0.75;
     this.mainScene = mainScene!;
   }
   override updatePhysics(deltaTime: number): void {
@@ -25,7 +25,7 @@ export default class Bullet extends PhysicalGameObject {
     const direction = { x: 0, y: 0, z: 0 };
 
     QuaternionUtils.rotateVector(this.rotationQuaternion, forwardVector, direction);
-    const speed = 6;
+    const speed = 12;
     direction.x *= speed;
     direction.y *= speed;
     direction.z *= speed;
