@@ -352,10 +352,11 @@ export class MyGame extends Engine {
       setTimeout(() => {
         this.spaceship.obj.setPosition(x, y, 0);
         this.flame.obj.setPosition(x, y, 0);
-        this.spaceship.id = this.currentScene.addGameObject(
-          this.spaceship.obj
-        )!;
+        this.spaceship.rotation = { x: 0, y: 0, z: 0, w: 1 };
+        this.spaceship.id = this.currentScene.addGameObject(this.spaceship.obj)!;
         this.flame.id = this.currentScene.addGameObject(this.flame.obj)!;
+        this.flame.obj.setPosition(1231231231, 123123123, 123123123);
+
       }, 700);
       setTimeout(() => {
         this.isTeleporting = false;
@@ -442,6 +443,7 @@ export class MyGame extends Engine {
 
     this.spaceship.id = mainScene.addGameObject(this.spaceship.obj);
     this.flame.id = mainScene.addGameObject(this.flame.obj);
+    this.flame.obj.setPosition(1231231231, 123123123, 123123123);
     mainScene.setMainCamera(camera, this.width, this.height);
 
     const GUIScene = new Scene();
