@@ -11,7 +11,7 @@ import Bullet from "./asteroids/objects/bullet";
 import Flame from "./asteroids/objects/flame";
 import { QuaternionUtils } from "drake-engine";
 import { Camera } from "drake-engine";
-import { Vector } from "./math";
+import { Vector } from "drake-engine";
 import { AsteroidPlayerOverlap } from "./AsteroidPlayerOverlap";
 import { BulletAsteroidOverlap } from "./BulletAsteroidOverlap";
 import { StartButton } from "./StartButton";
@@ -429,7 +429,7 @@ export class MyGame extends Engine {
       if (i < lives) {
         this.icons[i].strokeColor = "white";
       } else {
-        this.icons[i].strokeColor = "black";
+        this.icons[i].strokeColor = "transparent";
       }
     }
   
