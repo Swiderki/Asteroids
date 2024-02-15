@@ -180,6 +180,10 @@ export class MyGame extends Engine {
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(this.scoreTitle);
     }
 
+    else {
+      this.scoreTitle.text = `Your score was: ${score}`;
+    }
+
     this.hasAlreadyScoreText = true;
     this.setCurrentScene(this.GUIScene!);
   }
