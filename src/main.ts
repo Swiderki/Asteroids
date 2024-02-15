@@ -55,6 +55,7 @@ export class MyGame extends Engine {
   resultText: GUIText;
   bestResultText: GUIText;
   icons: Icon[];
+  iconsID: number[] = [];
   lifes: number = 3;
   isShooting: boolean = false;
   isTeleporting: boolean = false;
@@ -63,6 +64,8 @@ export class MyGame extends Engine {
   beatInterval: number = 500;
   currentBeat: typeof beat1 = beat1;
   scoreTitle: GUIText | null = null;
+  nextLifeThreshold = 100;
+
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -110,6 +113,8 @@ export class MyGame extends Engine {
         "white"
       ),
     ];
+
+  
   }
 
   changeScene() {
@@ -567,9 +572,9 @@ export class MyGame extends Engine {
 
     mainSceneGUI.addElement(this.resultText);
     mainSceneGUI.addElement(this.bestResultText);
-    mainSceneGUI.addElement(this.icons[0]);
-    mainSceneGUI.addElement(this.icons[1]);
-    mainSceneGUI.addElement(this.icons[2]);
+    this.iconsID[0] = mainSceneGUI.addElement(this.icons[0]);
+    this.iconsID[1] = mainSceneGUI.addElement(this.icons[1]);
+    this.iconsID[2] = mainSceneGUI.addElement(this.icons[2]);
     mainScene.setCurrentGUI(mainSceneGUIID);
 
     this.spaceship.id = mainScene.addGameObject(this.spaceship.obj);
@@ -638,7 +643,7 @@ export class MyGame extends Engine {
   override Update(): void {
     // Sound
     super.Update();
-
+    this.updateLives()
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
@@ -682,17 +687,43 @@ export class MyGame extends Engine {
   changeBestResultText(text: string) {
     this.bestResultText.text = text;
   }
-
   changeLifeIcons(lives: number) {
-    for (let i = 0; i < 3; i++) {
-      if (i < lives) {
-        this.icons[i].strokeColor = "white";
-      } else {
-        this.icons[i].strokeColor = "transparent";
-      }
+    while (this.icons.length < lives) {
+        const index = this.icons.length;
+        const icon = new Icon(
+            "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
+            770,
+            770,
+            { x: 245 + index * 20, y: 60 },
+            "white"
+        );
+        this.icons.push(icon);
+        const iconId = this.currentScene.currentGUI!.addElement(icon);
+        this.iconsID.push(iconId);
     }
-  }
+    while (this.icons.length > lives) {
+        this.icons.pop();
+        const iconId = this.iconsID.pop();
+        if (iconId) {
+            this.currentScene.currentGUI!.removeElement(iconId);
+        }
+    }
 }
+
+
+
+  updateLives() {
+    if (this.lifes <= 0) return;
+
+    const score = parseInt(this.resultText.text);
+    if (score >= this.nextLifeThreshold) {
+      this.lifes++;
+      console.log("dodane")
+      this.changeLifeIcons(this.lifes);
+
+      this.nextLifeThreshold += 100;
+    }
+}}
 
 const game = new MyGame(canvas);
 game.run();
