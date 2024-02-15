@@ -203,9 +203,12 @@ export class MyGame extends Engine {
 
     this.asteroids.set(astId, ast);
 
-    this.currentScene.addOverlap(
-      new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
-    );
+    if (this.currentScene.id == this.gameScene) {
+      this.currentScene.addOverlap(
+        new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
+      );
+    }
+
     this.ufos.forEach((el, k) => {
       const ov = new UfoAsteroidOverlap(el, ast, this);
       this.currentScene.addOverlap(ov);
@@ -262,9 +265,12 @@ export class MyGame extends Engine {
 
     this.asteroids.set(astId, ast);
 
-    this.currentScene.addOverlap(
-      new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
-    );
+    if (this.currentScene.id == this.gameScene) {
+      this.currentScene.addOverlap(
+        new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
+      );
+    }
+    
     this.ufos.forEach((el, k) => {
       const ov = new UfoAsteroidOverlap(el, ast, this);
       this.currentScene.addOverlap(ov);
