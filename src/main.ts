@@ -33,6 +33,8 @@ const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
 export class MyGame extends Engine {
   spaceship;
+  astOnBoard: number = 4;
+  level: number = 0;
   hasAlreadyScoreText: boolean = false;
   spaceShipKilled: boolean = false;
   gameScene: number | null = null;
@@ -164,6 +166,10 @@ export class MyGame extends Engine {
     }, 2000);
   }
 
+  evaluateAsteroids() {
+    console.log(this.currentScene.gameObjects.size);
+  }
+
   endGame(score: number) {
     if (!this.hasAlreadyScoreText) {
       const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
@@ -188,6 +194,9 @@ export class MyGame extends Engine {
     else {
       this.scoreTitle!.text = `Your score was: ${score}`;
     }
+
+    this.level = 0;
+    this.astOnBoard = 4;
 
     this.hasAlreadyScoreText = true;
     this.setCurrentScene(this.GUIScene!);
@@ -387,7 +396,7 @@ export class MyGame extends Engine {
   }
 
   handleSpaceshipMove() {
-    const rotationAmount = Math.PI / 128;
+    const rotationAmount = Math.PI / 100;
     if (
       this.keysPressed.has("w") &&
       this.currentScene.id != this.GUIScene &&

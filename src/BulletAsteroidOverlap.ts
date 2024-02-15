@@ -53,5 +53,7 @@ export class BulletAsteroidOverlap extends Overlap {
     this.game.asteroids.delete(this.astID);
 
     this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
+    this.game.astOnBoard -= 1;
+    this.game.evaluateAsteroids();
   }
 }
