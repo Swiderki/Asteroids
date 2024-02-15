@@ -7,5 +7,6 @@ export class Particle extends PhysicalGameObject {
     this.velocity = {x: (Math.random() - 0.5)*4, y: (Math.random() - 0.5)*4, z: 0};
 
     setTimeout(() => game.currentScene!.removeGameObject(this.id), Math.random()*500 + 500);
+    this.loadMesh();
   }
 }

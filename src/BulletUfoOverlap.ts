@@ -25,7 +25,8 @@ export class BulletUfoOverlap extends Overlap {
   }
 
   override onOverlap() {
-    console.log(this.game.currentScene.overlaps.size)
+    console.log("ZMIENIONO");
+    this.game.isUfoOnBoard = false;
     this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 200));
     this.game.currentScene!.removeGameObject(this.bulletID);
     this.game.currentScene!.removeGameObject(this.ufoID);

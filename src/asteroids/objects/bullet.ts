@@ -19,7 +19,7 @@ export default class Bullet extends PhysicalGameObject {
     this.lifeTime = 0.4;
     this.mainScene = mainScene!;
     this.loadMesh();
-    this.showBoxcollider = true;
+    // this.showBoxcollider = true;
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
@@ -34,7 +34,6 @@ export default class Bullet extends PhysicalGameObject {
     this.move(direction.x * deltaTime, direction.y * deltaTime, direction.z * deltaTime);
     this.lifeTime -= deltaTime;
     if (this.lifeTime <= 0) {
-      console.log(this.mainScene)
       this.mainScene.removeGameObject(this.id);
     }
     this.checkPosition()

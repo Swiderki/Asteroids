@@ -29,6 +29,8 @@ export class BulletAsteroidOverlap extends Overlap {
   }
 
   override onOverlap() {
+    this.game.astCount++;
+
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();
       this.game.createRandomAsteroidAtPosition("m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);

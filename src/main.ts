@@ -21,7 +21,6 @@ import { BulletAsteroidOverlap } from "./BulletAsteroidOverlap";
 import { StartButton } from "./StartButton";
 import { UfoPlayerOverlap } from "./UfoPlayerOverlap";
 import { BulletUfoOverlap } from "./BulletUfoOverlap";
-import { UfoAsteroidOverlap } from "./UfoAsteroidOverlap";
 import { Particle } from "./asteroids/objects/particle";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
@@ -33,7 +32,9 @@ const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
 export class MyGame extends Engine {
   spaceship;
+  astCount: number = 0;
   astOnBoard: number = 4;
+  lastUfoSpawn: number = Date.now();
   level: number = 0;
   hasAlreadyScoreText: boolean = false;
   spaceShipKilled: boolean = false;
@@ -45,6 +46,7 @@ export class MyGame extends Engine {
   ufos: Map<number, Ufo> = new Map();
   keysPressed: Set<string> = new Set();
   lastAsteroidSpawnTime: number = Date.now();
+  isUfoOnBoard: boolean = false;
   lastUfoSpawnTime: number = Date.now();
   rotationQuaternion: { x: number; y: number; z: number; w: number } = {
     x: 0,
@@ -67,7 +69,6 @@ export class MyGame extends Engine {
   currentBeat: typeof beat1 = beat1;
   scoreTitle: GUIText | null = null;
   nextLifeThreshold = 100;
-
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -115,8 +116,6 @@ export class MyGame extends Engine {
         "white"
       ),
     ];
-
-  
   }
 
   changeScene() {
@@ -129,7 +128,11 @@ export class MyGame extends Engine {
       const color: string = ["yellow", "red", "orange"][
         Math.floor(Math.random() * 3)
       ];
-      for (let j = 0; j < 4; j++) setTimeout(() => p.setLineColor(j, color));
+
+      p.Start = () => {
+        for (let j = 0; j < 4; j++) setTimeout(() => p.setLineColor(j, color));
+      };
+
       this.currentScene.addGameObject(p);
     }
   }
@@ -140,7 +143,9 @@ export class MyGame extends Engine {
     setTimeout(() => {
       this.scenes
         .get(this.gameScene!)!
-        .gameObjects.forEach((obj) => this.currentScene!.removeGameObject(obj.id));
+        .gameObjects.forEach((obj) =>
+          this.currentScene!.removeGameObject(obj.id)
+        );
       this.endGame(parseInt(this.resultText.text));
       this.resultText.text = "0";
       this.lifes = 0;
@@ -167,7 +172,18 @@ export class MyGame extends Engine {
   }
 
   evaluateAsteroids() {
-    console.log(this.currentScene.gameObjects.size);
+    console.log(this.astCount);
+
+    const n = 4 + this.level;
+    if (this.astCount < n + n * 2 + n * 2 * 2) return;
+
+    for (let i = 0; i < n + 1; i++) {
+      this.createRandomAsteroid("l", true);
+    }
+    
+
+    this.level++;
+    this.astCount = 0;
   }
 
   endGame(score: number) {
@@ -180,18 +196,17 @@ export class MyGame extends Engine {
         "red",
         700
       );
-  
+
       endGameTitle.position.y = 30;
       endGameTitle.position.x = (this.width - endGameTitle.width) / 2;
-  
-      this.scoreTitle.position.y = endGameTitle.height + this.scoreTitle.height + 20;
+
+      this.scoreTitle.position.y =
+        endGameTitle.height + this.scoreTitle.height + 20;
       this.scoreTitle.position.x = (this.width - this.scoreTitle.width) / 2;
 
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(endGameTitle);
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(this.scoreTitle);
-    }
-
-    else {
+    } else {
       this.scoreTitle!.text = `Your score was: ${score}`;
     }
 
@@ -240,8 +255,14 @@ export class MyGame extends Engine {
       8,
       true,
       position,
-      [0.01, 0.01, 0.01]
+      [0.007 + this.level / 1000 * 2, 0.007 + this.level / 1000 * 2, 0.007 + this.level / 1000 * 2]
     );
+
+    ast.boxCollider![0].x += 0.16;
+    ast.boxCollider![0].y += 0.16;
+    ast.boxCollider![1].x += 0.16;
+    ast.boxCollider![1].y += 0.16;
+
     ast.showBoxcollider = true;
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const astId = this.currentScene.addGameObject(ast);
@@ -253,11 +274,6 @@ export class MyGame extends Engine {
     this.currentScene.addOverlap(
       new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
     );
-
-    this.ufos.forEach((el, k) => {
-      const ov = new UfoAsteroidOverlap(el, ast, this);
-      this.currentScene.addOverlap(ov);
-    });
   }
 
   createRandomAsteroid(type: "l" | "m" | "s", mustBeTeleported: boolean) {
@@ -310,8 +326,14 @@ export class MyGame extends Engine {
       8,
       mustBeTeleported,
       position,
-      [0.01, 0.01, 0.01]
+      [0.007 + this.level / 1000, 0.007 + this.level / 1000, 0.007 + this.level / 1000]
     );
+
+    ast.boxCollider![0].x += 0.08;
+    ast.boxCollider![0].y += 0.08;
+    ast.boxCollider![1].x += 0.08;
+    ast.boxCollider![1].y += 0.08;
+
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const astId = this.currentScene.addGameObject(ast);
 
@@ -322,17 +344,16 @@ export class MyGame extends Engine {
         new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
       );
     }
-
-    this.ufos.forEach((el, k) => {
-      const ov = new UfoAsteroidOverlap(el, ast, this);
-      this.currentScene.addOverlap(ov);
-    });
   }
 
-  createRandomUfo(level: "hard" | "easy") {
+  createRandomUfo() {
     if (this.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
+
+    console.log(this.isUfoOnBoard);
+
+    this.isUfoOnBoard = true;
 
     const edge = ["left", "right", "top", "bottom"][
       Math.floor(Math.random() * 4)
@@ -355,8 +376,9 @@ export class MyGame extends Engine {
       targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
     } while (targetPosition[0] === 0 && targetPosition[1] === 0);
 
-    // Losowanie i obliczanie wektora prędkości
-    const velocityMagnitude = Math.random() * 6 + 3;
+    
+    // Increase in speed by (this.level) (base value is 4)
+    const velocityMagnitude = 4 + this.level;
     const velocityDirection = [
       targetPosition[0] - position[0],
       targetPosition[1] - position[1],
@@ -366,11 +388,10 @@ export class MyGame extends Engine {
         v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
     );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
-    const size: [number, number, number] =
-      level == "hard" ? [0.008, 0.008, 0.008] : [0.01, 0.01, 0.01];
-    // Tworzenie asteroidy
+    const size: [number, number, number] = [0.01, 0.01, 0.01];
+
+    // Tworzenie ufo
     const ufo = new Ufo(
-      level,
       position,
       size,
       [0, 0, 0],
@@ -379,20 +400,17 @@ export class MyGame extends Engine {
       this,
       Number(this.resultText.text)
     );
+
     ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const ufoId = this.currentScene.addGameObject(ufo);
 
     this.ufos.set(ufoId, ufo);
 
-    // if (this.currentScene.id == this.gameScene) return;
+    if (this.currentScene.id != this.gameScene) return;
 
     this.currentScene.addOverlap(
       new UfoPlayerOverlap(this.spaceship.obj, ufo, this)
     );
-    this.asteroids.forEach((el, k) => {
-      const ov = new UfoAsteroidOverlap(ufo, el, this);
-      this.currentScene.addOverlap(ov);
-    });
   }
 
   handleSpaceshipMove() {
@@ -524,12 +542,11 @@ export class MyGame extends Engine {
         { x: -0.1, y: -0.1, z: 0 },
         { x: 0.1, y: 0.1, z: -1 },
       ];
-      bullet.showBoxcollider = true;
+      // bullet.showBoxcollider = true;
       const bulletID = this.currentScene.addGameObject(bullet);
 
       if (this.currentScene.id == this.gameScene) {
         this.asteroids.forEach((el, k) => {
-          console.log("test");
           const ov = new BulletAsteroidOverlap(bullet, el, bulletID, k, this);
           this.currentScene.addOverlap(ov);
         });
@@ -653,7 +670,7 @@ export class MyGame extends Engine {
     // Sound
     super.Update();
     // console.log(this.currentScene.overlaps)
-    this.updateLives()
+    this.updateLives();
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
@@ -676,20 +693,17 @@ export class MyGame extends Engine {
       this.lastAsteroidSpawnTime = currentTime;
     }
 
+    // Next ufo spawns after (1 - 0.3*this.level) seconds
+    if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
     if (
-      currentTime - this.lastUfoSpawnTime >= 5000 &&
+      currentTime - this.lastUfoSpawnTime >= 10000 - 3000*this.level &&
       this.currentScene.id == this.gameScene
     ) {
-      if (this.lastUfoLevel == "hard" && Number(this.resultText.text) < 40000) {
-        this.createRandomUfo("easy");
-        this.lastUfoLevel = "easy";
-      } else {
-        this.createRandomUfo("hard");
-        this.lastUfoLevel = "hard";
-      }
       this.lastUfoSpawnTime = currentTime;
+      this.createRandomUfo();
     }
   }
+
   changeResultText(text: string) {
     this.resultText.text = text;
   }
@@ -699,28 +713,26 @@ export class MyGame extends Engine {
   }
   changeLifeIcons(lives: number) {
     while (this.icons.length < lives) {
-        const index = this.icons.length;
-        const icon = new Icon(
-            "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-            770,
-            770,
-            { x: 245 + index * 20, y: 60 },
-            "white"
-        );
-        this.icons.push(icon);
-        const iconId = this.currentScene.currentGUI!.addElement(icon);
-        this.iconsID.push(iconId);
+      const index = this.icons.length;
+      const icon = new Icon(
+        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
+        770,
+        770,
+        { x: 245 + index * 20, y: 60 },
+        "white"
+      );
+      this.icons.push(icon);
+      const iconId = this.currentScene.currentGUI!.addElement(icon);
+      this.iconsID.push(iconId);
     }
     while (this.icons.length > lives) {
-        this.icons.pop();
-        const iconId = this.iconsID.pop();
-        if (iconId) {
-            this.currentScene.currentGUI!.removeElement(iconId);
-        }
+      this.icons.pop();
+      const iconId = this.iconsID.pop();
+      if (iconId) {
+        this.currentScene.currentGUI!.removeElement(iconId);
+      }
     }
-}
-
-
+  }
 
   updateLives() {
     if (this.lifes <= 0) return;
@@ -728,12 +740,12 @@ export class MyGame extends Engine {
     const score = parseInt(this.resultText.text);
     if (score >= this.nextLifeThreshold) {
       this.lifes++;
-      console.log("dodane")
       this.changeLifeIcons(this.lifes);
 
       this.nextLifeThreshold += 100;
     }
-}}
+  }
+}
 
 const game = new MyGame(canvas);
 game.run();

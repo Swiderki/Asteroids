@@ -12,7 +12,6 @@ export class UfoPlayerOverlap extends Overlap {
     super(obj1, obj2);
     this.game = game;
     this.spaceship = obj1;
-    console.log('UfoPlayerOverlap');
   }
 
   override onOverlap(): void {
