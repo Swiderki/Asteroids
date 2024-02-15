@@ -62,6 +62,7 @@ export class MyGame extends Engine {
   lastBeatTime: number = Date.now();
   beatInterval: number = 500;
   currentBeat: typeof beat1 = beat1;
+  scoreTitle: GUIText | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -160,7 +161,7 @@ export class MyGame extends Engine {
 
   endGame(score: number) {
     const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
-    const scoreTitle = new GUIText(
+    this.scoreTitle = new GUIText(
       `Your score was: ${score}`,
       18,
       "monospace",
@@ -171,12 +172,12 @@ export class MyGame extends Engine {
     endGameTitle.position.y = 30;
     endGameTitle.position.x = (this.width - endGameTitle.width) / 2;
 
-    scoreTitle.position.y = endGameTitle.height + scoreTitle.height + 20;
-    scoreTitle.position.x = (this.width - scoreTitle.width) / 2;
+    this.scoreTitle.position.y = endGameTitle.height + this.scoreTitle.height + 20;
+    this.scoreTitle.position.x = (this.width - this.scoreTitle.width) / 2;
 
     if (!this.hasAlreadyScoreText) {
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(endGameTitle);
-      this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(scoreTitle);
+      this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(this.scoreTitle);
     }
 
     this.hasAlreadyScoreText = true;
@@ -230,7 +231,7 @@ export class MyGame extends Engine {
     this.asteroids.set(astId, ast);
 
     if (this.currentScene.id != this.gameScene) return;
-    
+
     this.currentScene.addOverlap(
       new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
     );
