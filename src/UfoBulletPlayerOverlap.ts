@@ -16,9 +16,8 @@ export class UfoBulletPlayerOverlap extends Overlap {
   }
 
   override onOverlap(): void {
-    if (this.game.spaceship.obj.isBlinking) return;
-    if (!this.game.currentScene) return;
-    if (this.collised) return;
+    this.game.currentScene!.removeGameObject(this.obj2.id);
+
     this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);
@@ -26,8 +25,10 @@ export class UfoBulletPlayerOverlap extends Overlap {
     if (this.game.lifes <= 0) {
       this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 8);
       this.game.runEnd();
+      return;
     }
-    
+
     else this.game.spaceship.obj.runBlinking();
+    this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 3);
   }
 }

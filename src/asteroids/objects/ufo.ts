@@ -48,7 +48,7 @@ export default class Ufo extends PhysicalGameObject {
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
     const time = Date.now();
-    if (time - this.lastBulletSpawnTime > 1000) {
+    if (time - this.lastBulletSpawnTime > 3000) {
       this.createRandomBullet();
       this.lastBulletSpawnTime = time;
     }
@@ -79,6 +79,24 @@ export default class Ufo extends PhysicalGameObject {
       { x: -0.1, y: -0.1, z: 0 },
       { x: 0.1, y: 0.1, z: -1 },
     ];
+
+    bullet.velocity = {
+      x: this.game.spaceship.obj.position.x - this.position.x,
+      y: this.game.spaceship.obj.position.y - this.position.y,
+      z: 0,
+    };
+
+    bullet.velocity = {
+      x:
+        (bullet.velocity.x /
+          Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) *
+        20,
+      y:
+        (bullet.velocity.y /
+          Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) *
+        20,
+      z: 0,
+    };
 
     const ufoId = this.currentScene.addGameObject(bullet);
     this.bullets.set(ufoId, bullet);

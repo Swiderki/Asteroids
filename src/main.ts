@@ -125,14 +125,6 @@ export class MyGame extends Engine {
   spawnParticles(position: Vec3DTuple, amount: number) {
     for (let i = 0; i < amount; i++) {
       const p = new Particle(position, this);
-      const color: string = ["yellow", "red", "orange"][
-        Math.floor(Math.random() * 3)
-      ];
-
-      p.Start = () => {
-        for (let j = 0; j < 4; j++) setTimeout(() => p.setLineColor(j, color));
-      };
-
       this.currentScene.addGameObject(p);
     }
   }
@@ -669,7 +661,6 @@ export class MyGame extends Engine {
   override Update(): void {
     // Sound
     super.Update();
-    // console.log(this.currentScene.overlaps)
     this.updateLives();
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
@@ -693,10 +684,10 @@ export class MyGame extends Engine {
       this.lastAsteroidSpawnTime = currentTime;
     }
 
-    // Next ufo spawns after (1 - 0.3*this.level) seconds
+    // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
     if (
-      currentTime - this.lastUfoSpawnTime >= 10000 - 3000*this.level &&
+      currentTime - this.lastUfoSpawnTime >= 20000 - 3000*this.level &&
       this.currentScene.id == this.gameScene
     ) {
       this.lastUfoSpawnTime = currentTime;

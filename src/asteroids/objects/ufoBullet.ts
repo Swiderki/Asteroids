@@ -20,25 +20,16 @@ export default class Bullet extends PhysicalGameObject {
     this.mainScene = mainScene!;
     this.loadMesh();
     this.showBoxcollider = true;
-    this.loadMesh();
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
-    const forwardVector = { x: 0, y: 1, z: 0 };
-    const direction = { x: 0, y: 0, z: 0 };
-
-    QuaternionUtils.rotateVector(this.rotationQuaternion, forwardVector, direction);
-    const speed = 9;
-    direction.x *= speed;
-    direction.y *= speed;
-    direction.z *= speed;
-    this.move(direction.x * deltaTime, direction.y * deltaTime, direction.z * deltaTime);
     this.lifeTime -= deltaTime;
     if (this.lifeTime <= 0) {
       this.mainScene.removeGameObject(this.id);
     }
     this.checkPosition()
   }
+  
   checkPosition(): void {
     let deltaX = 0;
     let deltaY = 0;
