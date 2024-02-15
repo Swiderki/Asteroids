@@ -643,7 +643,7 @@ export class MyGame extends Engine {
   override Update(): void {
     // Sound
     super.Update();
-    this.updateLives()
+    // this.updateLives()
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
