@@ -29,6 +29,7 @@ export default class Ufo extends PhysicalGameObject {
       this.game = game!;
       this.boxCollider = level == "hard" ?  [{x: -0.31, y: 0.3, z: 0}, {x: 0.35, y: -0.13, z: -1}] : [{x: -0.4, y: 0.37, z: 0}, {x: 0.4, y: -0.17, z: -1}]
       this.points = points!;
+      this.loadMesh();
       this.showBoxcollider = true;
       this.level = level;
 

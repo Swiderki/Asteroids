@@ -23,6 +23,7 @@ export default class Asteroids extends PhysicalGameObject {
     this.canvasHeight = canvasHeight;
     this.canvasWidth = canvasWidth;
     this.showBoxcollider = true;
+    this.loadMesh();
   }
 
   override updatePhysics(deltaTime: number): void {
