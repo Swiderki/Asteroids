@@ -384,7 +384,7 @@ export class MyGame extends Engine {
 
     this.ufos.set(ufoId, ufo);
 
-    if (this.currentScene.id == this.gameScene) return;
+    // if (this.currentScene.id == this.gameScene) return;
 
     this.currentScene.addOverlap(
       new UfoPlayerOverlap(this.spaceship.obj, ufo, this)
@@ -652,6 +652,7 @@ export class MyGame extends Engine {
   override Update(): void {
     // Sound
     super.Update();
+    // console.log(this.currentScene.overlaps)
     this.updateLives()
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
@@ -676,7 +677,7 @@ export class MyGame extends Engine {
     }
 
     if (
-      currentTime - this.lastUfoSpawnTime >= 15000 &&
+      currentTime - this.lastUfoSpawnTime >= 5000 &&
       this.currentScene.id == this.gameScene
     ) {
       if (this.lastUfoLevel == "hard" && Number(this.resultText.text) < 40000) {
