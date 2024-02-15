@@ -125,7 +125,7 @@ export class MyGame extends Engine {
 
   spawnParticles(position: Vec3DTuple, amount: number) {
     for (let i = 0; i < amount; i++) {
-      const p = new Particle(position);
+      const p = new Particle(position, this);
       const color: string = ["yellow", "red", "orange"][
         Math.floor(Math.random() * 3)
       ];
@@ -135,12 +135,12 @@ export class MyGame extends Engine {
   }
 
   runEnd() {
-    this.spaceship.obj.kill();
+    this.currentScene!.removeGameObject(this.spaceship.obj.id);
     this.spaceShipKilled = true;
     setTimeout(() => {
       this.scenes
         .get(this.gameScene!)!
-        .gameObjects.forEach((obj) => obj.kill());
+        .gameObjects.forEach((obj) => this.currentScene!.removeGameObject(obj.id));
       this.endGame(parseInt(this.resultText.text));
       this.resultText.text = "0";
       this.lifes = 0;
