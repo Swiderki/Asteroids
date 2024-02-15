@@ -24,7 +24,8 @@ export class StartButton extends Button {
     this.game.createRandomAsteroid("l", true);
     this.game.createRandomAsteroid("l", true);
     this.game.createRandomAsteroid("l", true);
-
+    this.game.lifes = 3;
+    this.game.changeLifeIcons(3)
     this.game.currentScene.currentGUI!.isCursorHidden = true;
   }
 }

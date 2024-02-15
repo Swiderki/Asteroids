@@ -141,9 +141,9 @@ export class MyGame extends Engine {
         .gameObjects.forEach((obj) => obj.kill());
       this.endGame(parseInt(this.resultText.text));
       this.resultText.text = "0";
-      this.lifes = 3;
+      this.lifes = 0;
       this.changeLifeIcons(this.lifes);
-
+      this.nextLifeThreshold = 100;
       this.flame = {
         obj: new Flame([0, 0, 0], [0.01, 0.01, 0.01]),
         rotation: { x: 0, y: 0, z: 0, w: 1 },
@@ -387,7 +387,7 @@ export class MyGame extends Engine {
   }
 
   handleSpaceshipMove() {
-    const rotationAmount = Math.PI / 256;
+    const rotationAmount = Math.PI / 128;
     if (
       this.keysPressed.has("w") &&
       this.currentScene.id != this.GUIScene &&
@@ -643,7 +643,7 @@ export class MyGame extends Engine {
   override Update(): void {
     // Sound
     super.Update();
-    // this.updateLives()
+    this.updateLives()
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
