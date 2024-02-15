@@ -165,28 +165,28 @@ export class MyGame extends Engine {
   }
 
   endGame(score: number) {
-    const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
-    this.scoreTitle = new GUIText(
-      `Your score was: ${score}`,
-      18,
-      "monospace",
-      "red",
-      700
-    );
-
-    endGameTitle.position.y = 30;
-    endGameTitle.position.x = (this.width - endGameTitle.width) / 2;
-
-    this.scoreTitle.position.y = endGameTitle.height + this.scoreTitle.height + 20;
-    this.scoreTitle.position.x = (this.width - this.scoreTitle.width) / 2;
-
     if (!this.hasAlreadyScoreText) {
+      const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
+      this.scoreTitle = new GUIText(
+        `Your score was: ${score}`,
+        18,
+        "monospace",
+        "red",
+        700
+      );
+  
+      endGameTitle.position.y = 30;
+      endGameTitle.position.x = (this.width - endGameTitle.width) / 2;
+  
+      this.scoreTitle.position.y = endGameTitle.height + this.scoreTitle.height + 20;
+      this.scoreTitle.position.x = (this.width - this.scoreTitle.width) / 2;
+
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(endGameTitle);
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(this.scoreTitle);
     }
 
     else {
-      this.scoreTitle.text = `Your score was: ${score}`;
+      this.scoreTitle!.text = `Your score was: ${score}`;
     }
 
     this.hasAlreadyScoreText = true;
