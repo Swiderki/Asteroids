@@ -3,6 +3,10 @@ import { MyGame } from "./main";
 import Asteroid from "./asteroids/objects/asteroid";
 import Bullet from "./asteroids/objects/bullet";
 
+const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
+const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");
+const bangSmall = new Audio("src/asteroids/sounds/bangSmall.wav");
+
 export class BulletAsteroidOverlap extends Overlap {
   private game: MyGame;
   private bullet: Bullet;
@@ -27,18 +31,21 @@ export class BulletAsteroidOverlap extends Overlap {
   override onOverlap() {
     console.log("XDDD");
     if (this.asteroid.metricalSize == "l") {
+      bangLarge.play();
       this.game.createRandomAsteroidAtPosition("m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.createRandomAsteroidAtPosition("m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 20));
     }
 
     if (this.asteroid.metricalSize == "m") {
+      bangMedium.play();
       this.game.createRandomAsteroidAtPosition("s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.createRandomAsteroidAtPosition("s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 50));
     }
     
     if (this.asteroid.metricalSize == "s") {
+      bangSmall.play();
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 100));
     }
 

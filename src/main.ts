@@ -11,9 +11,14 @@ import { BulletAsteroidOverlap } from "./BulletAsteroidOverlap";
 import { StartButton } from "./StartButton";
 import { UfoPlayerOverlap } from "./UfoPlayerOverlap";
 import { BulletUfoOverlap } from "./BulletUfoOverlap";
+import { UfoAsteroidOverlap } from "./UfoAsteroidOverlap";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
+
+const thrustSound = new Audio("src/asteroids/sounds/thrust.wav");
+const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
+const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
 export class MyGame extends Engine {
   spaceship;
@@ -43,6 +48,9 @@ export class MyGame extends Engine {
   isShooting: boolean = false;
   isTeleporting: boolean = false;
   lastUfoLevel: "hard" | "easy" = "hard";
+  lastBeatTime: number = Date.now();
+  beatInterval: number = 500; 
+  currentBeat: typeof beat1 = beat1;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -198,6 +206,11 @@ export class MyGame extends Engine {
     this.currentScene.addOverlap(
       new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
     );
+    this.ufos.forEach((el, k) => {
+      const ov = new UfoAsteroidOverlap(el, ast, this);
+      this.currentScene.addOverlap(ov);
+    });
+
   }
 
   createRandomAsteroid(type: "l" | "m" | "s", mustBeTeleported: boolean) {
@@ -252,6 +265,10 @@ export class MyGame extends Engine {
     this.currentScene.addOverlap(
       new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
     );
+    this.ufos.forEach((el, k) => {
+      const ov = new UfoAsteroidOverlap(el, ast, this);
+      this.currentScene.addOverlap(ov);
+    });
   }
 
   createRandomUfo(level: "hard" | "easy") {
@@ -311,6 +328,10 @@ export class MyGame extends Engine {
     this.currentScene.addOverlap(
       new UfoPlayerOverlap(this.spaceship.obj, ufo, this)
     );
+    this.asteroids.forEach((el, k) => {
+      const ov = new UfoAsteroidOverlap(ufo, el, this);
+      this.currentScene.addOverlap(ov);
+    })
   }
 
   handleSpaceshipMove() {
@@ -456,6 +477,10 @@ export class MyGame extends Engine {
 
     if (e.key == "w") {
       this.flame.obj.setPosition(1231231231, 123123123, 123123123);
+      this.keysPressed.delete(e.key);
+      this.handleSpaceshipMove();  
+      thrustSound.pause();
+      thrustSound.currentTime = 0; 
     }
   }
 
@@ -546,9 +571,18 @@ export class MyGame extends Engine {
     });
   }
   override Update(): void {
-    this.handleSpaceshipMove();
+    // Sound
     super.Update();
+
     const currentTime = Date.now();
+    if (currentTime - this.lastBeatTime >= this.beatInterval) {
+      this.currentBeat.play();
+
+      this.currentBeat = this.currentBeat === beat1 ? beat2 : beat1;
+
+      this.lastBeatTime = currentTime; 
+    }
+    this.handleSpaceshipMove();
 
     if (this.currentScene.id == this.GUIScene) {
 
@@ -561,9 +595,9 @@ export class MyGame extends Engine {
         this.lastAsteroidSpawnTime = currentTime;
       }
     }
-    if (currentTime - this.lastUfoSpawnTime >= 2000) {
+    if (currentTime - this.lastUfoSpawnTime >= 15000) {
       if(this.lastUfoLevel == "hard" && Number(this.resultText.text) < 40000) {
-        this.createRandomUfo("hard");
+        this.createRandomUfo("easy");
         this.lastUfoLevel = "easy";
       }else {
         this.createRandomUfo("hard");

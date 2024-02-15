@@ -6,7 +6,13 @@ import { UfoBulletPlayerOverlap } from "../../UfoBulletPlayerOverlap";
 import { MyGame } from "../../main";
 import Spaceship from "./spaceship";
 
+const soucerEasy = new Audio("src/asteroids/sounds/saucerSmall.wav");
+const soucerHard = new Audio("src/asteroids/sounds/saucerBig.wav");
+
 export default class Ufo extends PhysicalGameObject {
+    private sound: HTMLAudioElement | null = null;
+    canvasWidth: number = 11;
+    canvasHeight: number = 6;
     lastBulletSpawnTime: number = Date.now();
     currentScene: Scene;
     bullets: Map<number, UfoBullet> = new Map();
@@ -15,17 +21,22 @@ export default class Ufo extends PhysicalGameObject {
     level: "hard" | "easy";
     shots = 2;
     points: number;
+    
     constructor(level: "hard" | "easy", position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, currentScene?: Scene, spaceship?: Spaceship, game?: MyGame, points? : number) {
       super(`src/asteroids/objects/obj/ufo.obj`, { position, size, rotation });
       this.currentScene = currentScene!;
-      console.log(currentScene)
       this.spaceship = spaceship!;
       this.game = game!;
       this.boxCollider = level == "hard" ?  [{x: -0.31, y: 0.3, z: 0}, {x: 0.35, y: -0.13, z: -1}] : [{x: -0.4, y: 0.37, z: 0}, {x: 0.4, y: -0.17, z: -1}]
       this.points = points!;
       this.showBoxcollider = true;
       this.level = level;
+
+      // Tworzymy obiekt dźwięku i ustawiamy opcję loop
+      this.sound = level === "hard" ? soucerHard : soucerEasy;
+
     }
+    
     override updatePhysics(deltaTime: number): void {
       super.updatePhysics(deltaTime);
       const time = Date.now();
@@ -34,7 +45,10 @@ export default class Ufo extends PhysicalGameObject {
         this.lastBulletSpawnTime = time;
         this.shots--
       }
+      this.sound!.play();
+      this.checkPosition()
     }
+    
     createRandomBullet() {
       if (this.currentScene == null) {
         throw new Error("Main scene must be set first.");
@@ -42,7 +56,7 @@ export default class Ufo extends PhysicalGameObject {
       const quaternion = { x: 0, y: 0, z: 0, w: 1 };
       if(this.level == "hard") {
         // TODO: Add shooting
-      }else{
+      } else {
         const yaw = Math.random() * Math.PI * 2; 
         const w = Math.cos(yaw * 0.5);
         const z = Math.sin(yaw * 0.5);
@@ -50,8 +64,6 @@ export default class Ufo extends PhysicalGameObject {
         quaternion.w = w
       }
 
-  
-  // Add a random spread that decreases as totalTime increases
       const bullet = new UfoBullet(
         [this.position.x, this.position.y, this.position.z],
         [0.01, 0.01, 0.01],
@@ -71,4 +83,25 @@ export default class Ufo extends PhysicalGameObject {
         new UfoBulletPlayerOverlap(this.spaceship, bullet, this.game)
       );
     }
-  }
+    
+    checkPosition(): void {
+      let deltaX = 0;
+      let deltaY = 0;
+  
+      if (this.position.x > this.canvasWidth) {
+        deltaX = -(this.canvasWidth * 2);
+      } else if (this.position.x < -this.canvasWidth) {
+        deltaX = this.canvasWidth * 2;
+      }
+  
+      if (this.position.y > this.canvasHeight) {
+        deltaY = -(this.canvasHeight * 2);
+      } else if (this.position.y < -this.canvasHeight) {
+        deltaY = this.canvasHeight * 2;
+      }
+  
+      if (deltaX != 0 || deltaY != 0) {
+        this.move(deltaX, deltaY, 0);
+      }
+    }
+}
