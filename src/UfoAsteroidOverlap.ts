@@ -18,6 +18,6 @@ export class UfoAsteroidOverlap extends Overlap {
     if (!this.game.currentScene) return;
     if (this.collised) return;
     this.game.currentScene.removeGameObject(this.Ufo.id);
-    
+    this.game.spawnParticles([this.Ufo.position.x, this.Ufo.position.y, this.Ufo.position.z], 8);
   }
 }

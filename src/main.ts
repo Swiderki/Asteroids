@@ -1,4 +1,4 @@
-import _default from "drake-engine";
+import _default, { Vec3DTuple } from "drake-engine";
 import { Engine, Scene, GUI, GUIText, Button, Icon, QuaternionUtils, Camera, Vector } from "drake-engine";
 
 import Asteroid from "./asteroids/objects/asteroid";
@@ -12,6 +12,7 @@ import { StartButton } from "./StartButton";
 import { UfoPlayerOverlap } from "./UfoPlayerOverlap";
 import { BulletUfoOverlap } from "./BulletUfoOverlap";
 import { UfoAsteroidOverlap } from "./UfoAsteroidOverlap";
+import { Particle } from "./asteroids/objects/particle";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -104,8 +105,13 @@ export class MyGame extends Engine {
     this.setCurrentScene(this.gameScene!);
   }
 
-  spawnParticles() {
-    
+  spawnParticles(position: Vec3DTuple, amount: number) {
+    for (let i = 0; i<amount; i++) {
+      const p = new Particle(position);
+      const color: string = ["yellow", "red", "orange"][Math.floor(Math.random() * 3)];
+      for (let j = 0; j<4; j++) setTimeout(() => p.setLineColor(j, color));
+      this.currentScene.addGameObject(p);
+    }
   }
 
   runEnd() {
@@ -270,7 +276,7 @@ export class MyGame extends Engine {
         new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
       );
     }
-    
+
     this.ufos.forEach((el, k) => {
       const ov = new UfoAsteroidOverlap(el, ast, this);
       this.currentScene.addOverlap(ov);

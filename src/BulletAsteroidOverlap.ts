@@ -29,7 +29,6 @@ export class BulletAsteroidOverlap extends Overlap {
   }
 
   override onOverlap() {
-    console.log("XDDD");
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();
       this.game.createRandomAsteroidAtPosition("m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
@@ -52,5 +51,7 @@ export class BulletAsteroidOverlap extends Overlap {
     this.game.currentScene!.removeGameObject(this.bulletID);
     this.game.currentScene!.removeGameObject(this.astID);
     this.game.asteroids.delete(this.astID);
+
+    this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
   }
 }

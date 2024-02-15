@@ -34,7 +34,10 @@ export class AsteroidPlayerOverlap extends Overlap {
     } else {    
       bangSmall.play();
     }
-    if (this.game.lifes <= 0) this.game.runEnd();
+    if (this.game.lifes <= 0) {
+      this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 5);
+      this.game.runEnd();
+    }
     else this.spaceship.runBlinking();
   }
 }

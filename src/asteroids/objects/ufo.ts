@@ -34,7 +34,6 @@ export default class Ufo extends PhysicalGameObject {
 
       // Tworzymy obiekt dźwięku i ustawiamy opcję loop
       this.sound = level === "hard" ? soucerHard : soucerEasy;
-
     }
     
     override updatePhysics(deltaTime: number): void {
