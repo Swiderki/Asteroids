@@ -22,7 +22,7 @@ const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 const fire = new Audio("src/asteroids/sounds/fire.wav");
 
 // show all boxcolliders
-export const debugMode: boolean = true;
+export const debugMode: boolean = false;
 
 export class MyGame extends Engine {
   //? Objects
@@ -269,6 +269,8 @@ export class MyGame extends Engine {
     const mainSceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.resultText.position = { x: 250, y: 30 };
     this.bestResultText.position = { x: 600, y: 30 };
+    const bestResult = localStorage.getItem('bestResult') || '0';
+    this.bestResultText.text = `${bestResult}`;
     mainSceneGUI.addElement(this.resultText);
     mainSceneGUI.addElement(this.bestResultText);
     this.iconsID[0] = mainSceneGUI.addElement(this.icons[0]);
@@ -345,7 +347,6 @@ export class MyGame extends Engine {
 
   override Update(): void {
     // Sound playing
-    console.log(this.isUfoOnBoard)
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
@@ -404,6 +405,16 @@ export class MyGame extends Engine {
   changeBestResultText(text: string) {
     this.bestResultText.text = text;
   }
+  
+  updateBestResult(currentScore: number) {
+    const bestResult = parseInt(localStorage.getItem('bestResult') || '0');
+
+    if (currentScore > bestResult) {
+        localStorage.setItem('bestResult', currentScore.toString());
+
+        this.bestResultText.text = `Best: ${currentScore}`;
+    }
+}
 
   // LIFES
 
@@ -451,13 +462,22 @@ export class MyGame extends Engine {
   runEnd() {
     this.currentScene!.removeGameObject(this.spaceship.obj.id);
     this.spaceShipKilled = true;
+    const result = parseInt(this.resultText.text)
     setTimeout(() => {
+      const currentScore = parseInt(this.resultText.text);
+      const bestResult = parseInt(localStorage.getItem('bestResult') || '0');
+
+      if (currentScore > bestResult) {
+          localStorage.setItem('bestResult', currentScore.toString());
+          this.bestResultText.text = `${currentScore}`;
+      }
       this.resetGame();
-      this.endGame(parseInt(this.resultText.text));
+      this.endGame(result);
     }, 2000);
   }
 
   endGame(score: number) {
+    console.log(score)
     if (!this.hasAlreadyScoreText) {
       this.displayEndGameMessage(score);
     } else {
