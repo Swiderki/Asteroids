@@ -35,7 +35,7 @@ export class MyGame extends Engine {
   gui: GUI;
   resultText: GUIText;
   bestResultText: GUIText;
-  icons: Icon[] = []
+  icons: Icon[] = [];
   iconsID: number[] = [];
   scoreTitle: GUIText | null = null;
   GUIScene: number | null = null;
@@ -51,7 +51,7 @@ export class MyGame extends Engine {
   lastBeatTime: number = Date.now();
   beatInterval: number = 500;
 
-  //? Controls 
+  //? Controls
   keysPressed: Set<string> = new Set();
   isShooting: boolean = false;
   isTeleporting: boolean = false;
@@ -62,6 +62,7 @@ export class MyGame extends Engine {
   lastUfoSpawn: number = Date.now();
   spaceShipKilled: boolean = false;
   lastShurikenSpawnTime: number = Date.now();
+  lastRepairSpawnTime: number = Date.now();
   lastAsteroidSpawnTime: number = Date.now();
   isUfoOnBoard: boolean = false;
   lastUfoSpawnTime: number = Date.now();
@@ -71,12 +72,11 @@ export class MyGame extends Engine {
     z: 0,
     w: 1,
   };
-  
+
   //? Game logic
   level: number = 0;
   hasAlreadyScoreText: boolean = false;
   gameScene: number | null = null;
-
 
   // Maybe should be refactored
   constructor(canvas: HTMLCanvasElement) {
@@ -100,29 +100,7 @@ export class MyGame extends Engine {
     // Initialize GUI elements
     this.resultText = new GUIText("00", 35, "Arial", "white", 100);
     this.bestResultText = new GUIText("00", 35, "Arial", "white", 100);
-    this.icons = [
-      new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 245, y: 60 },
-        "white"
-      ),
-      new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 265, y: 60 },
-        "white"
-      ),
-      new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 285, y: 60 },
-        "white"
-      ),
-    ];
+    this.icons = [new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245, y: 60 }, "white"), new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 265, y: 60 }, "white"), new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 285, y: 60 }, "white")];
   }
 
   changeScene() {
@@ -135,8 +113,6 @@ export class MyGame extends Engine {
       this.currentScene.addGameObject(p);
     }
   }
-
-
 
   evaluateAsteroids() {
     console.log(this.astCount);
@@ -151,12 +127,12 @@ export class MyGame extends Engine {
     this.level++;
     this.astCount = 0;
   }
-  
+
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 100;
 
     if (this.currentScene.id === this.GUIScene || this.spaceShipKilled) return;
-  
+
     if (this.keysPressed.has("w")) {
       this.moveForward();
     }
@@ -173,12 +149,12 @@ export class MyGame extends Engine {
       this.shoot();
     }
   }
-  
+
   moveForward() {
     this.flame.obj.setPosition(this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z);
     const forwardVector = { x: 0, y: 1, z: 0 };
     let direction = { x: 0, y: 0, z: 0 };
-  
+
     QuaternionUtils.rotateVector(this.spaceship.rotation, forwardVector, direction);
     const speed = 0.02;
     direction.x *= speed;
@@ -186,7 +162,7 @@ export class MyGame extends Engine {
     direction.z *= speed;
     const deltaVelocity = Vector.divide(direction, this.spaceship.obj.mass);
     direction = Vector.add(direction, deltaVelocity);
-  
+
     this.flame.obj.velocity.x += direction.x;
     this.flame.obj.velocity.y += direction.y;
     this.flame.obj.velocity.z += direction.z;
@@ -194,17 +170,17 @@ export class MyGame extends Engine {
     this.spaceship.obj.velocity.y += direction.y;
     this.spaceship.obj.velocity.z += direction.z;
   }
-  
+
   rotateLeft(rotationAmount: number) {
     QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, rotationAmount);
     this.applyRotation();
   }
-  
+
   rotateRight(rotationAmount: number) {
     QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: -1 }, rotationAmount);
     this.applyRotation();
   }
-  
+
   applyRotation() {
     QuaternionUtils.multiply(this.spaceship.rotation, this.rotationQuaternion, this.spaceship.rotation);
     QuaternionUtils.multiply(this.flame.rotation, this.rotationQuaternion, this.flame.rotation);
@@ -213,7 +189,7 @@ export class MyGame extends Engine {
     this.spaceship.obj.applyQuaternion(this.rotationQuaternion);
     this.flame.obj.applyQuaternion(this.rotationQuaternion);
   }
-  
+
   teleport() {
     this.isTeleporting = true;
     const x = Math.random() * 20 - 10;
@@ -228,7 +204,7 @@ export class MyGame extends Engine {
       this.isTeleporting = false;
     }, 2100);
   }
-  
+
   shoot() {
     this.isShooting = true;
     const bullet = new Bullet([this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z], [0.5, 0.5, 0.5], [0, 0, 0], this.spaceship.rotation, this.scenes.get(this.gameScene!)!);
@@ -251,7 +227,6 @@ export class MyGame extends Engine {
       this.isShooting = false;
     }, 400);
   }
-  
 
   handleKeyDown(e: KeyboardEvent) {
     this.keysPressed.add(e.key);
@@ -271,27 +246,24 @@ export class MyGame extends Engine {
     }
   }
 
-
   //!!!!!! START
   override Start(): void {
     this.setResolution(1280, 720);
     const camera = new Camera(60, 0.1, 1000, [0, 0, -10], [0, 0, 1]);
-  
+
     const mainScene = this.initializeMainScene(camera);
     this.initializeGUIScene(camera);
-  
-    this.addEventListeners();
-    
-    this.setCurrentScene(this.GUIScene!); 
-    mainScene.started = true
-  }
-  
 
+    this.addEventListeners();
+
+    this.setCurrentScene(this.GUIScene!);
+    mainScene.started = true;
+  }
 
   initializeMainScene(camera: Camera): Scene {
     const mainScene = new Scene();
     mainScene.setMainCamera(camera, this.width, this.height);
-    
+
     //! Initialize GUI elements
     const mainSceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.resultText.position = { x: 250, y: 30 };
@@ -307,33 +279,31 @@ export class MyGame extends Engine {
     // Setup main scene  objects
     this.spaceship.id = mainScene.addGameObject(this.spaceship.obj);
     this.flame.id = mainScene.addGameObject(this.flame.obj);
-    this.flame.obj.setPosition(1231231231, 123123123, 123123123)
-  
+    this.flame.obj.setPosition(1231231231, 123123123, 123123123);
+
     this.gameScene = this.addScene(mainScene);
     return mainScene;
   }
-  
+
   initializeGUIScene(camera: Camera): Scene {
     const GUIScene = new Scene();
     GUIScene.setMainCamera(camera, this.width, this.height);
-  
+
     const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.configureStartScreenGUIElements(GUISceneGUI);
-  
+
     const GUISceneGUIID = GUIScene.addGUI(GUISceneGUI);
     GUIScene.setCurrentGUI(GUISceneGUIID);
-  
+
     this.GUIScene = this.addScene(GUIScene);
     return GUIScene;
   }
-  
 
-  
   configureStartScreenGUIElements(GUISceneGUI: GUI): void {
     const t1 = new GUIText("Asteroids", 70, "monospace", "#fff", 700);
     const t2 = new GUIText("Made by Świderki", 16, "monospace", "#fff", 700);
     const t3 = new StartButton(this);
-  
+
     // Positioning logic
     t1.position.x = (this.width - t1.width) / 2;
     t1.position.y = this.height / 2 - 100;
@@ -341,25 +311,25 @@ export class MyGame extends Engine {
     t3.position.x = (this.width - t1.width) / 2;
     t3.position.y = t1.position.y + t1.height + 5 + t2.height + 30;
     t2.position.y = t1.position.y + t1.height + 5;
-  
+
     // Padding and styling for the start button
     t3.padding.bottom = 30;
     t3.padding.top = 30;
     t3.padding.right = 90;
     t3.padding.left = 90;
-  
+
     this.startButton = t3;
-  
+
     // Add elements to GUI
     GUISceneGUI.addElement(t1);
     GUISceneGUI.addElement(t2);
     GUISceneGUI.addElement(t3);
   }
-  
+
   addEventListeners(): void {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
     document.addEventListener("keyup", this.handleKeyUp.bind(this));
-  
+
     this.getCanvas.addEventListener("mousemove", (e: MouseEvent) => {
       if (this.startButton && !this.startButton.isCoordInElement(e.clientX, e.clientY)) {
         const color = "white";
@@ -370,13 +340,10 @@ export class MyGame extends Engine {
         this.startButton.border.right.color = color;
       }
     });
-
   }
-  
-  
 
   override Update(): void {
-    // Sound playing    
+    // Sound playing
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
@@ -385,7 +352,6 @@ export class MyGame extends Engine {
 
       this.lastBeatTime = currentTime;
     }
-
 
     this.handleSpaceshipMove();
 
@@ -435,22 +401,19 @@ export class MyGame extends Engine {
     this.bestResultText.text = text;
   }
 
-
-
   // LIFES
 
   changeLifeIcons(lifes: number) {
     const difference = lifes - this.icons.length;
-  
+
     if (difference > 0) {
       for (let i = 0; i < difference; i++) {
         this.addLifeIcon(this.icons.length);
       }
     } else {
       for (let i = 0; i < -difference; i++) {
-        const iconId = this.iconsID.pop(); 
+        const iconId = this.iconsID.pop();
         if (iconId !== undefined) {
-
           this.currentScene.currentGUI!.removeElement(iconId);
           this.icons.pop();
         }
@@ -464,7 +427,6 @@ export class MyGame extends Engine {
     const iconId = this.currentScene.currentGUI!.addElement(icon);
     this.iconsID.push(iconId);
   }
-  
 
   updateLifes() {
     if (this.lifes <= 0) return;
@@ -490,57 +452,56 @@ export class MyGame extends Engine {
       this.endGame(parseInt(this.resultText.text));
     }, 2000);
   }
-  
+
   endGame(score: number) {
     if (!this.hasAlreadyScoreText) {
       this.displayEndGameMessage(score);
     } else {
       this.scoreTitle!.text = `Your score was: ${score}`;
     }
-  
+
     this.hasAlreadyScoreText = true;
     this.setCurrentScene(this.GUIScene!);
   }
-  
+
   resetGame() {
     this.scenes.get(this.gameScene!)!.gameObjects.forEach((obj) => this.currentScene!.removeGameObject(obj.id));
-  
+
     this.resultText.text = "0";
     this.lifes = 3;
-    this.changeLifeIcons(this.lifes); 
+    this.changeLifeIcons(this.lifes);
     this.nextLifeThreshold = 10000;
-    this.astCount = 0
+    this.astCount = 0;
     this.level = 0;
     this.astOnBoard = 4;
     this.spaceShipKilled = false;
     this.isUfoOnBoard = false;
-  
+
     this.createSpaceshipAndFlame();
     this.scenes.get(this.gameScene!)!.addGameObject(this.spaceship.obj);
   }
-  
+
   displayEndGameMessage(score: number) {
     const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
     this.scoreTitle = new GUIText(`Your score was: ${score}`, 18, "monospace", "red", 700);
-  
+
     endGameTitle.position.y = 30;
     endGameTitle.position.x = (this.width - endGameTitle.width) / 2;
-  
+
     this.scoreTitle.position.y = endGameTitle.height + this.scoreTitle.height + 20;
     this.scoreTitle.position.x = (this.width - this.scoreTitle.width) / 2;
-  
+
     this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(endGameTitle);
     this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(this.scoreTitle);
   }
-  
+
   createSpaceshipAndFlame() {
     // Initialize spaceship and flame objects with default values
     this.flame.obj = new Flame([0, 0, 0], [0.01, 0.01, 0.01]);
     this.flame.rotation = { x: 0, y: 0, z: 0, w: 1 };
-    this.spaceship.obj = new Spaceship([0, 0, 0], [0.01, 0.01, 0.01],);
+    this.spaceship.obj = new Spaceship([0, 0, 0], [0.01, 0.01, 0.01]);
     this.spaceship.rotation = { x: 0, y: 0, z: 0, w: 1 };
   }
-  
 }
 
 const game = new MyGame(canvas);
