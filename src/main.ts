@@ -61,7 +61,7 @@ export class MyGame extends Engine {
   beatInterval: number = 500;
   currentBeat: typeof beat1 = beat1;
   scoreTitle: GUIText | null = null;
-  nextLifeThreshold = 100;
+  nextLifeThreshold = 10000;
   maxLifes: number = 5;
 
   // Maybe should be refactored
@@ -428,7 +428,7 @@ export class MyGame extends Engine {
       }
       this.changeLifeIcons(this.lifes);
 
-      this.nextLifeThreshold += 100;
+      this.nextLifeThreshold += 10000;
     }
   }
 }
