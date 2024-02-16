@@ -1,5 +1,6 @@
 import { Button } from "drake-engine";
 import { MyGame } from "./main";
+import Asteroid from "./asteroids/objects/asteroid";
 
 export class StartButton extends Button {
   game: MyGame;
@@ -20,10 +21,10 @@ export class StartButton extends Button {
   override onClick(): void {
     this.game.changeScene();
     this.game.asteroids.clear();
-    this.game.createRandomAsteroid("l", true);
-    this.game.createRandomAsteroid("l", true);
-    this.game.createRandomAsteroid("l", true);
-    this.game.createRandomAsteroid("l", true);
+    Asteroid.createRandomAsteroid(this.game, "l", true);
+    Asteroid.createRandomAsteroid(this.game, "l", true);
+    Asteroid.createRandomAsteroid(this.game, "l", true);
+    Asteroid.createRandomAsteroid(this.game, "l", true);
     this.game.lastUfoSpawnTime = Date.now();
     this.game.lifes = 3;
     this.game.changeLifeIcons(3)

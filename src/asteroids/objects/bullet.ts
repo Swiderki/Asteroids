@@ -19,6 +19,11 @@ export default class Bullet extends PhysicalGameObject {
     this.lifeTime = 0.4;
     this.mainScene = mainScene!;
     this.loadMesh();
+
+    this.boxCollider = [
+      { x: -0.1, y: -0.1, z: 0 },
+      { x: 0.1, y: 0.1, z: -1 },
+    ];
     // this.showBoxcollider = true;
   }
   override updatePhysics(deltaTime: number): void {

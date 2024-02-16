@@ -1,7 +1,7 @@
 import { Overlap } from "drake-engine";
-import { MyGame } from "./main";
-import Spaceship from "./asteroids/objects/spaceship";
-import Asteroid from "./asteroids/objects/asteroid";
+import { MyGame } from "../../main";
+import Spaceship from "../objects/spaceship";
+import Asteroid from "../objects/asteroid";
 
 const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
 const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");

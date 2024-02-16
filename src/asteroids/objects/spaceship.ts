@@ -12,6 +12,10 @@ export default class Spaceship extends PhysicalGameObject {
     super(`src/asteroids/objects/obj/spaceship.obj`, { position, size, rotation });
     this.loadMesh();
     this.showBoxcollider = true;
+    this.boxCollider = [
+      { x: -0.2, y: 0.3, z: 0 },
+      { x: 0.3, y: -0.3, z: -1 },
+    ];
   }
 
   override updatePhysics(deltaTime: number): void {

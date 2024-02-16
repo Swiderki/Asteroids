@@ -16,12 +16,11 @@ import Spaceship from "./asteroids/objects/spaceship";
 import Bullet from "./asteroids/objects/bullet";
 import Flame from "./asteroids/objects/flame";
 import Ufo from "./asteroids/objects/ufo";
-import { AsteroidPlayerOverlap } from "./AsteroidPlayerOverlap";
-import { BulletAsteroidOverlap } from "./BulletAsteroidOverlap";
+import { BulletAsteroidOverlap } from "./asteroids/overlaps/BulletAsteroidOverlap";
 import { StartButton } from "./StartButton";
-import { UfoPlayerOverlap } from "./UfoPlayerOverlap";
-import { BulletUfoOverlap } from "./BulletUfoOverlap";
+import { BulletUfoOverlap } from "./asteroids/overlaps/BulletUfoOverlap";
 import { Particle } from "./asteroids/objects/particle";
+import Shuriken from "./asteroids/objects/shuriken";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -40,6 +39,7 @@ export class MyGame extends Engine {
   spaceShipKilled: boolean = false;
   gameScene: number | null = null;
   GUIScene: number | null = null;
+  lastShurikenSpawnTime: number = Date.now();
   startButton: Button | null = null;
   bullets: Bullet[] = [];
   asteroids: Map<number, Asteroid> = new Map();
@@ -70,6 +70,7 @@ export class MyGame extends Engine {
   scoreTitle: GUIText | null = null;
   nextLifeThreshold = 100;
 
+  // Maybe should be refactored
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
@@ -79,15 +80,13 @@ export class MyGame extends Engine {
       rotation: { x: 0, y: 0, z: 0, w: 1 },
       id: 0,
     };
+
     this.spaceship = {
       obj: new Spaceship([0, 0, 0], [0.01, 0.01, 0.01]),
       rotation: { x: 0, y: 0, z: 0, w: 1 },
       id: 0,
     };
-    this.spaceship.obj.boxCollider = [
-      { x: -0.2, y: 0.3, z: 0 },
-      { x: 0.3, y: -0.3, z: -1 },
-    ];
+
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
 
     // Initialize GUI elements
@@ -129,6 +128,7 @@ export class MyGame extends Engine {
     }
   }
 
+  // Must be refactored
   runEnd() {
     this.currentScene!.removeGameObject(this.spaceship.obj.id);
     this.spaceShipKilled = true;
@@ -153,10 +153,6 @@ export class MyGame extends Engine {
         rotation: { x: 0, y: 0, z: 0, w: 1 },
         id: 0,
       };
-      this.spaceship.obj.boxCollider = [
-        { x: -0.2, y: 0.3, z: 0 },
-        { x: 0.3, y: -0.3, z: -1 },
-      ];
 
       this.scenes.get(this.gameScene!)!.addGameObject(this.spaceship.obj);
       this.spaceShipKilled = false;
@@ -170,14 +166,14 @@ export class MyGame extends Engine {
     if (this.astCount < n + n * 2 + n * 2 * 2) return;
 
     for (let i = 0; i < n + 1; i++) {
-      this.createRandomAsteroid("l", true);
+      Asteroid.createRandomAsteroid(this, "l", true);
     }
-    
 
     this.level++;
     this.astCount = 0;
   }
 
+  // Must be refactored
   endGame(score: number) {
     if (!this.hasAlreadyScoreText) {
       const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
@@ -209,202 +205,7 @@ export class MyGame extends Engine {
     this.setCurrentScene(this.GUIScene!);
   }
 
-  createRandomAsteroidAtPosition(
-    asteroidType: "l" | "m" | "s",
-    position: [number, number, number]
-  ) {
-    if (this.currentScene == null) {
-      throw new Error("Main scene must be set first.");
-    }
-
-    // Losowanie punktu docelowego, który nie jest środkiem, aby uniknąć przypadku, gdy asteroida nie poruszałaby się
-    let targetPosition;
-    do {
-      targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5, 0];
-    } while (
-      targetPosition[0] === position[0] &&
-      targetPosition[1] === position[1]
-    );
-
-    // Losowanie i obliczanie wektora prędkości
-    const velocityMagnitude = Math.random() * 4 + 2;
-    const velocityDirection = [
-      targetPosition[0] - position[0],
-      targetPosition[1] - position[1],
-      0,
-    ];
-    const normalizedVelocity = velocityDirection.map(
-      (v) =>
-        v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
-    );
-    const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
-
-    // Tworzenie asteroidy z podanym typem i pozycją
-    const ast = new Asteroid(
-      Math.floor(Math.random() * 15) + 1,
-      asteroidType,
-      16,
-      8,
-      true,
-      position,
-      [0.007 + this.level / 1000 * 2, 0.007 + this.level / 1000 * 2, 0.007 + this.level / 1000 * 2]
-    );
-
-    ast.boxCollider![0].x += 0.16;
-    ast.boxCollider![0].y += 0.16;
-    ast.boxCollider![1].x += 0.16;
-    ast.boxCollider![1].y += 0.16;
-
-    ast.showBoxcollider = true;
-    ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
-    const astId = this.currentScene.addGameObject(ast);
-
-    this.asteroids.set(astId, ast);
-
-    if (this.currentScene.id != this.gameScene) return;
-
-    this.currentScene.addOverlap(
-      new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
-    );
-  }
-
-  createRandomAsteroid(type: "l" | "m" | "s", mustBeTeleported: boolean) {
-    if (this.currentScene == null) {
-      throw new Error("Main scene must be set first.");
-    }
-
-    // Losowanie rozmiaru (1 do 15)
-    const size = Math.floor(Math.random() * 15) + 1;
-
-    // Losowanie pozycji
-    const edge = ["left", "right", "top", "bottom"][
-      Math.floor(Math.random() * 4)
-    ];
-    let position: [number, number, number];
-    if (edge === "left") {
-      position = [-18, Math.random() * 16 - 8, 0];
-    } else if (edge === "right") {
-      position = [18, Math.random() * 16 - 8, 0];
-    } else if (edge === "top") {
-      position = [Math.random() * 36 - 18, 8, 0];
-    } else {
-      // bottom
-      position = [Math.random() * 36 - 18, -8, 0];
-    }
-
-    // Losowanie punktu docelowego, który nie jest środkiem
-    let targetPosition;
-    do {
-      targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
-    } while (targetPosition[0] === 0 && targetPosition[1] === 0);
-
-    // Losowanie i obliczanie wektora prędkości
-    const velocityMagnitude = Math.random() * 3 + 1.5;
-    const velocityDirection = [
-      targetPosition[0] - position[0],
-      targetPosition[1] - position[1],
-    ];
-    const normalizedVelocity = velocityDirection.map(
-      (v) =>
-        v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
-    );
-    const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
-
-    // Tworzenie asteroidy
-    const ast = new Asteroid(
-      size,
-      type,
-      16,
-      8,
-      mustBeTeleported,
-      position,
-      [0.007 + this.level / 1000, 0.007 + this.level / 1000, 0.007 + this.level / 1000]
-    );
-
-    ast.boxCollider![0].x += 0.08;
-    ast.boxCollider![0].y += 0.08;
-    ast.boxCollider![1].x += 0.08;
-    ast.boxCollider![1].y += 0.08;
-
-    ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
-    const astId = this.currentScene.addGameObject(ast);
-
-    this.asteroids.set(astId, ast);
-
-    if (this.currentScene.id == this.gameScene) {
-      this.currentScene.addOverlap(
-        new AsteroidPlayerOverlap(this.spaceship.obj, ast, this)
-      );
-    }
-  }
-
-  createRandomUfo() {
-    if (this.currentScene == null) {
-      throw new Error("Main scene must be set first.");
-    }
-
-    console.log(this.isUfoOnBoard);
-
-    this.isUfoOnBoard = true;
-
-    const edge = ["left", "right", "top", "bottom"][
-      Math.floor(Math.random() * 4)
-    ];
-    let position: [number, number, number];
-    if (edge === "left") {
-      position = [-18, Math.random() * 16 - 8, 0];
-    } else if (edge === "right") {
-      position = [18, Math.random() * 16 - 8, 0];
-    } else if (edge === "top") {
-      position = [Math.random() * 36 - 18, 8, 0];
-    } else {
-      // bottom
-      position = [Math.random() * 36 - 18, -8, 0];
-    }
-
-    // Losowanie punktu docelowego, który nie jest środkiem
-    let targetPosition;
-    do {
-      targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
-    } while (targetPosition[0] === 0 && targetPosition[1] === 0);
-
-    
-    // Increase in speed by (this.level) (base value is 4)
-    const velocityMagnitude = 4 + this.level;
-    const velocityDirection = [
-      targetPosition[0] - position[0],
-      targetPosition[1] - position[1],
-    ];
-    const normalizedVelocity = velocityDirection.map(
-      (v) =>
-        v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
-    );
-    const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
-    const size: [number, number, number] = [0.01, 0.01, 0.01];
-
-    // Tworzenie ufo
-    const ufo = new Ufo(
-      position,
-      size,
-      [0, 0, 0],
-      this.currentScene,
-      this.spaceship.obj,
-      this,
-      Number(this.resultText.text)
-    );
-
-    ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
-    const ufoId = this.currentScene.addGameObject(ufo);
-
-    this.ufos.set(ufoId, ufo);
-
-    if (this.currentScene.id != this.gameScene) return;
-
-    this.currentScene.addOverlap(
-      new UfoPlayerOverlap(this.spaceship.obj, ufo, this)
-    );
-  }
-
+  // Must be refactored
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 100;
     if (
@@ -529,10 +330,7 @@ export class MyGame extends Engine {
         this.spaceship.rotation,
         this.scenes.get(this.gameScene!)!
       );
-      bullet.boxCollider = [
-        { x: -0.1, y: -0.1, z: 0 },
-        { x: 0.1, y: 0.1, z: -1 },
-      ];
+      
       // bullet.showBoxcollider = true;
       const bulletID = this.currentScene.addGameObject(bullet);
 
@@ -571,6 +369,7 @@ export class MyGame extends Engine {
     }
   }
 
+  // It must be refactored
   override Start(): void {
     this.setResolution(1280, 720);
 
@@ -658,7 +457,7 @@ export class MyGame extends Engine {
     });
   }
   override Update(): void {
-    // Sound
+    // Sound playing
     super.Update();
     this.updateLives();
     const currentTime = Date.now();
@@ -671,11 +470,13 @@ export class MyGame extends Engine {
     }
     this.handleSpaceshipMove();
 
+    // Scene animation
     if (
       this.currentScene.id == this.GUIScene &&
       currentTime - this.lastAsteroidSpawnTime >= 1000
     ) {
-      this.createRandomAsteroid(
+      Asteroid.createRandomAsteroid(
+        this,
         ["l", "m", "s"][Math.floor(Math.random() * 3)] as "l" | "m" | "s",
         false
       );
@@ -686,11 +487,23 @@ export class MyGame extends Engine {
     // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
     if (
-      currentTime - this.lastUfoSpawnTime >= 20000 - 3000*this.level &&
+      currentTime - this.lastUfoSpawnTime >= 20000 - 3000 * this.level &&
       this.currentScene.id == this.gameScene
     ) {
       this.lastUfoSpawnTime = currentTime;
-      this.createRandomUfo();
+      Ufo.createRandomUfo(this);
+    }
+
+    // GUI Scene animation
+    if (currentTime - this.lastShurikenSpawnTime >= 1000 && this.currentScene.id == this.GUIScene) {
+      Shuriken.createRandomShuriken(this);
+      this.lastShurikenSpawnTime = Date.now();
+    }
+
+    // Real feature
+    if (currentTime - this.lastShurikenSpawnTime >= 1000 && this.currentScene.id == this.gameScene) {
+      Shuriken.createRandomShuriken(this);
+      this.lastShurikenSpawnTime = Date.now();
     }
   }
 
@@ -701,6 +514,8 @@ export class MyGame extends Engine {
   changeBestResultText(text: string) {
     this.bestResultText.text = text;
   }
+
+  // Used to handle live bar level change - changing icons
   changeLifeIcons(lives: number) {
     while (this.icons.length < lives) {
       const index = this.icons.length;
@@ -724,6 +539,7 @@ export class MyGame extends Engine {
     }
   }
 
+  // Used to handle live bar level change - basic operation
   updateLives() {
     if (this.lifes <= 0) return;
 

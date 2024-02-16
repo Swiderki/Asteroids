@@ -1,7 +1,7 @@
 import { Overlap } from "drake-engine";
-import { MyGame } from "./main";
-import Ufo from "./asteroids/objects/ufo";
-import Bullet from "./asteroids/objects/bullet";
+import { MyGame } from "../../main";
+import Ufo from "../objects/ufo";
+import Bullet from "../objects/bullet";
 
 export class BulletUfoOverlap extends Overlap {
   private game: MyGame;

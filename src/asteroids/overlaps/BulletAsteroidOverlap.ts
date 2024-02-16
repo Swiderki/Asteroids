@@ -1,7 +1,7 @@
 import { Overlap } from "drake-engine";
-import { MyGame } from "./main";
-import Asteroid from "./asteroids/objects/asteroid";
-import Bullet from "./asteroids/objects/bullet";
+import { MyGame } from "../../main";
+import Asteroid from "../objects/asteroid";
+import Bullet from "../objects/bullet";
 
 const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
 const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");
@@ -33,15 +33,16 @@ export class BulletAsteroidOverlap extends Overlap {
 
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();
-      this.game.createRandomAsteroidAtPosition("m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
-      this.game.createRandomAsteroidAtPosition("m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      
+      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 20));
     }
 
     if (this.asteroid.metricalSize == "m") {
       bangMedium.play();
-      this.game.createRandomAsteroidAtPosition("s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
-      this.game.createRandomAsteroidAtPosition("s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 50));
     }
     

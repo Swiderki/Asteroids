@@ -2,9 +2,10 @@ import { PhysicalGameObject } from "drake-engine";
 import { Vec3DTuple } from "drake-engine";
 import UfoBullet from "./ufoBullet";
 import { Scene } from "drake-engine";
-import { UfoBulletPlayerOverlap } from "../../UfoBulletPlayerOverlap";
+import { UfoBulletPlayerOverlap } from "../overlaps/UfoBulletPlayerOverlap";
 import { MyGame } from "../../main";
 import Spaceship from "./spaceship";
+import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
 
 const soucerEasy = new Audio("src/asteroids/sounds/saucerSmall.wav");
 const soucerHard = new Audio("src/asteroids/sounds/saucerBig.wav");
@@ -127,5 +128,70 @@ export default class Ufo extends PhysicalGameObject {
     if (deltaX != 0 || deltaY != 0) {
       this.move(deltaX, deltaY, 0);
     }
+  }
+
+  static createRandomUfo(game: MyGame) {
+    if (game.currentScene == null) {
+      throw new Error("Main scene must be set first.");
+    }
+
+    game.isUfoOnBoard = true;
+
+    const edge = ["left", "right", "top", "bottom"][
+      Math.floor(Math.random() * 4)
+    ];
+    let position: [number, number, number];
+    if (edge === "left") {
+      position = [-18, Math.random() * 16 - 8, 0];
+    } else if (edge === "right") {
+      position = [18, Math.random() * 16 - 8, 0];
+    } else if (edge === "top") {
+      position = [Math.random() * 36 - 18, 8, 0];
+    } else {
+      // bottom
+      position = [Math.random() * 36 - 18, -8, 0];
+    }
+
+    // Losowanie punktu docelowego, który nie jest środkiem
+    let targetPosition;
+    do {
+      targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
+    } while (targetPosition[0] === 0 && targetPosition[1] === 0);
+
+    
+    // Increase in speed by (this.level) (base value is 4)
+    const velocityMagnitude = 4 + game.level;
+    const velocityDirection = [
+      targetPosition[0] - position[0],
+      targetPosition[1] - position[1],
+    ];
+    const normalizedVelocity = velocityDirection.map(
+      (v) =>
+        v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
+    const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
+    const size: [number, number, number] = [0.01, 0.01, 0.01];
+
+    // Tworzenie ufo
+    const ufo = new Ufo(
+      position,
+      size,
+      [0, 0, 0],
+      game.currentScene,
+      game.spaceship.obj,
+      game,
+      Number(game.resultText.text)
+    );
+
+    ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
+    const ufoId = game.currentScene.addGameObject(ufo);
+
+    game.ufos.set(ufoId, ufo);
+
+    if (game.currentScene.id != game.gameScene) return;
+
+    game.currentScene.addOverlap(
+      new UfoPlayerOverlap(game.spaceship.obj, ufo, game)
+    );
   }
 }
