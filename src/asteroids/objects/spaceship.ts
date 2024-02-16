@@ -1,5 +1,6 @@
 import { PhysicalGameObject } from "drake-engine";
 import { Vec3DTuple } from "drake-engine";
+import { debugMode } from "../../main";
 
 export default class Spaceship extends PhysicalGameObject {
   canvasWidth: number = 11;
@@ -11,7 +12,7 @@ export default class Spaceship extends PhysicalGameObject {
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
     super(`src/asteroids/objects/obj/spaceship.obj`, { position, size, rotation });
     this.loadMesh();
-    this.showBoxcollider = true;
+    this.showBoxcollider = debugMode;
     this.boxCollider = [
       { x: -0.2, y: 0.3, z: 0 },
       { x: 0.3, y: -0.3, z: -1 },
@@ -45,21 +46,19 @@ export default class Spaceship extends PhysicalGameObject {
 
     const blink = () => {
       if (this.normalColor) {
-        for (let i = 0; i<5; i++) this.setLineColor(i, "red");
+        for (let i = 0; i < 5; i++) this.setLineColor(i, "red");
         this.normalColor = false;
-      }
-
-      else {
-        for (let i = 0; i<5; i++) this.setLineColor(i, "white");
+      } else {
+        for (let i = 0; i < 5; i++) this.setLineColor(i, "white");
         this.normalColor = true;
       }
-      
+
       if (this.isBlinking) setTimeout(() => blink(), 100);
-      else for (let i = 0; i<5; i++) this.setLineColor(i, "white");
+      else for (let i = 0; i < 5; i++) this.setLineColor(i, "white");
     };
 
     setTimeout(() => {
-      for (let i = 0; i<5; i++) this.setLineColor(i, "white");
+      for (let i = 0; i < 5; i++) this.setLineColor(i, "white");
       this.isBlinking = false;
       this.normalColor = true;
     }, 3000);

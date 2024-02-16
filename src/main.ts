@@ -1,15 +1,5 @@
 import _default, { Vec3DTuple } from "drake-engine";
-import {
-  Engine,
-  Scene,
-  GUI,
-  GUIText,
-  Button,
-  Icon,
-  QuaternionUtils,
-  Camera,
-  Vector,
-} from "drake-engine";
+import { Engine, Scene, GUI, GUIText, Button, Icon, QuaternionUtils, Camera, Vector } from "drake-engine";
 
 import Asteroid from "./asteroids/objects/asteroid";
 import Spaceship from "./asteroids/objects/spaceship";
@@ -28,6 +18,8 @@ if (!canvas) throw new Error("unable to find canvas");
 const thrustSound = new Audio("src/asteroids/sounds/thrust.wav");
 const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
+
+export const debugMode: boolean = false;
 
 export class MyGame extends Engine {
   spaceship;
@@ -92,29 +84,7 @@ export class MyGame extends Engine {
     // Initialize GUI elements
     this.resultText = new GUIText("00", 35, "Arial", "white", 100);
     this.bestResultText = new GUIText("00", 35, "Arial", "white", 100);
-    this.icons = [
-      new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 245, y: 60 },
-        "white"
-      ),
-      new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 265, y: 60 },
-        "white"
-      ),
-      new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 285, y: 60 },
-        "white"
-      ),
-    ];
+    this.icons = [new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245, y: 60 }, "white"), new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 265, y: 60 }, "white"), new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 285, y: 60 }, "white")];
   }
 
   changeScene() {
@@ -133,11 +103,7 @@ export class MyGame extends Engine {
     this.currentScene!.removeGameObject(this.spaceship.obj.id);
     this.spaceShipKilled = true;
     setTimeout(() => {
-      this.scenes
-        .get(this.gameScene!)!
-        .gameObjects.forEach((obj) =>
-          this.currentScene!.removeGameObject(obj.id)
-        );
+      this.scenes.get(this.gameScene!)!.gameObjects.forEach((obj) => this.currentScene!.removeGameObject(obj.id));
       this.endGame(parseInt(this.resultText.text));
       this.resultText.text = "0";
       this.lifes = 0;
@@ -177,19 +143,12 @@ export class MyGame extends Engine {
   endGame(score: number) {
     if (!this.hasAlreadyScoreText) {
       const endGameTitle = new GUIText("You lost", 45, "monospace", "red", 700);
-      this.scoreTitle = new GUIText(
-        `Your score was: ${score}`,
-        18,
-        "monospace",
-        "red",
-        700
-      );
+      this.scoreTitle = new GUIText(`Your score was: ${score}`, 18, "monospace", "red", 700);
 
       endGameTitle.position.y = 30;
       endGameTitle.position.x = (this.width - endGameTitle.width) / 2;
 
-      this.scoreTitle.position.y =
-        endGameTitle.height + this.scoreTitle.height + 20;
+      this.scoreTitle.position.y = endGameTitle.height + this.scoreTitle.height + 20;
       this.scoreTitle.position.x = (this.width - this.scoreTitle.width) / 2;
 
       this.scenes.get(this.GUIScene!)!.currentGUI!.addElement(endGameTitle);
@@ -208,24 +167,12 @@ export class MyGame extends Engine {
   // Must be refactored
   handleSpaceshipMove() {
     const rotationAmount = Math.PI / 100;
-    if (
-      this.keysPressed.has("w") &&
-      this.currentScene.id != this.GUIScene &&
-      !this.spaceShipKilled
-    ) {
-      this.flame.obj.setPosition(
-        this.spaceship.obj.position.x,
-        this.spaceship.obj.position.y,
-        this.spaceship.obj.position.z
-      );
+    if (this.keysPressed.has("w") && this.currentScene.id != this.GUIScene && !this.spaceShipKilled) {
+      this.flame.obj.setPosition(this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z);
       const forwardVector = { x: 0, y: 1, z: 0 };
       let direction = { x: 0, y: 0, z: 0 };
 
-      QuaternionUtils.rotateVector(
-        this.spaceship.rotation,
-        forwardVector,
-        direction
-      );
+      QuaternionUtils.rotateVector(this.spaceship.rotation, forwardVector, direction);
       const speed = 0.02;
       direction.x *= speed;
       direction.y *= speed;
@@ -240,26 +187,10 @@ export class MyGame extends Engine {
       this.spaceship.obj.velocity.y += direction.y;
       this.spaceship.obj.velocity.z += direction.z;
     }
-    if (
-      this.keysPressed.has("a") &&
-      this.currentScene.id != this.GUIScene &&
-      !this.spaceShipKilled
-    ) {
-      QuaternionUtils.setFromAxisAngle(
-        this.rotationQuaternion,
-        { x: 0, y: 0, z: 1 },
-        rotationAmount
-      );
-      QuaternionUtils.multiply(
-        this.spaceship.rotation,
-        this.rotationQuaternion,
-        this.spaceship.rotation
-      );
-      QuaternionUtils.multiply(
-        this.flame.rotation,
-        this.rotationQuaternion,
-        this.flame.rotation
-      );
+    if (this.keysPressed.has("a") && this.currentScene.id != this.GUIScene && !this.spaceShipKilled) {
+      QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, rotationAmount);
+      QuaternionUtils.multiply(this.spaceship.rotation, this.rotationQuaternion, this.spaceship.rotation);
+      QuaternionUtils.multiply(this.flame.rotation, this.rotationQuaternion, this.flame.rotation);
       QuaternionUtils.normalize(this.spaceship.rotation);
       QuaternionUtils.normalize(this.flame.rotation);
       this.spaceship.obj.applyQuaternion(this.rotationQuaternion);
@@ -267,31 +198,15 @@ export class MyGame extends Engine {
     }
 
     if (this.keysPressed.has("d")) {
-      QuaternionUtils.setFromAxisAngle(
-        this.rotationQuaternion,
-        { x: 0, y: 0, z: -1 },
-        rotationAmount
-      );
-      QuaternionUtils.multiply(
-        this.spaceship.rotation,
-        this.rotationQuaternion,
-        this.spaceship.rotation
-      );
-      QuaternionUtils.multiply(
-        this.flame.rotation,
-        this.rotationQuaternion,
-        this.flame.rotation
-      );
+      QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: -1 }, rotationAmount);
+      QuaternionUtils.multiply(this.spaceship.rotation, this.rotationQuaternion, this.spaceship.rotation);
+      QuaternionUtils.multiply(this.flame.rotation, this.rotationQuaternion, this.flame.rotation);
       QuaternionUtils.normalize(this.flame.rotation);
       QuaternionUtils.normalize(this.spaceship.rotation);
       this.spaceship.obj.applyQuaternion(this.rotationQuaternion);
       this.flame.obj.applyQuaternion(this.rotationQuaternion);
     }
-    if (
-      this.keysPressed.has("l") &&
-      !this.isTeleporting &&
-      !this.spaceShipKilled
-    ) {
+    if (this.keysPressed.has("l") && !this.isTeleporting && !this.spaceShipKilled) {
       this.isTeleporting = true;
       const x = Math.random() * 20 - 10;
       const y = Math.random() * 10 - 5;
@@ -301,9 +216,7 @@ export class MyGame extends Engine {
       setTimeout(() => {
         this.spaceship.obj.setPosition(x, y, 0);
         this.flame.obj.setPosition(x, y, 0);
-        this.spaceship.id = this.currentScene.addGameObject(
-          this.spaceship.obj
-        )!;
+        this.spaceship.id = this.currentScene.addGameObject(this.spaceship.obj)!;
         this.flame.id = this.currentScene.addGameObject(this.flame.obj)!;
         this.flame.obj.setPosition(1231231231, 123123123, 123123123);
       }, 700);
@@ -311,26 +224,11 @@ export class MyGame extends Engine {
         this.isTeleporting = false;
       }, 2100);
     }
-    if (
-      this.keysPressed.has("k") &&
-      !this.isShooting &&
-      !this.spaceShipKilled &&
-      this.currentScene.id == this.gameScene
-    ) {
+    if (this.keysPressed.has("k") && !this.isShooting && !this.spaceShipKilled && this.currentScene.id == this.gameScene) {
       if (this.isTeleporting) return;
       this.isShooting = true;
-      const bullet = new Bullet(
-        [
-          this.spaceship.obj.position.x,
-          this.spaceship.obj.position.y,
-          this.spaceship.obj.position.z,
-        ],
-        [0.5, 0.5, 0.5],
-        [0, 0, 0],
-        this.spaceship.rotation,
-        this.scenes.get(this.gameScene!)!
-      );
-      
+      const bullet = new Bullet([this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z], [0.5, 0.5, 0.5], [0, 0, 0], this.spaceship.rotation, this.scenes.get(this.gameScene!)!);
+
       // bullet.showBoxcollider = true;
       const bulletID = this.currentScene.addGameObject(bullet);
 
@@ -377,10 +275,7 @@ export class MyGame extends Engine {
 
     const mainScene = new Scene();
 
-    const mainSceneGUI = new GUI(
-      this.getCanvas,
-      this.getCanvas.getContext("2d")!
-    );
+    const mainSceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
 
     this.resultText.position = { x: 250, y: 30 };
     this.bestResultText.position = { x: 600, y: 30 };
@@ -399,10 +294,7 @@ export class MyGame extends Engine {
     mainScene.setMainCamera(camera, this.width, this.height);
 
     const GUIScene = new Scene();
-    const GUISceneGUI = new GUI(
-      this.getCanvas,
-      this.getCanvas.getContext("2d")!
-    );
+    const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     GUIScene.setMainCamera(camera, this.width, this.height);
 
     const t1 = new GUIText("Asteroids", 70, "monospace", "#fff", 700);
@@ -443,10 +335,7 @@ export class MyGame extends Engine {
     this.setCurrentScene(this.addScene(GUIScene));
 
     this.getCanvas.addEventListener("mousemove", (e: MouseEvent) => {
-      if (
-        this.startButton &&
-        !this.startButton!.isCoordInElement(e.clientX, e.clientY)
-      ) {
+      if (this.startButton && !this.startButton!.isCoordInElement(e.clientX, e.clientY)) {
         const color = "white";
         this.startButton!.color = color;
         this.startButton!.border.bottom.color = color;
@@ -471,25 +360,15 @@ export class MyGame extends Engine {
     this.handleSpaceshipMove();
 
     // Scene animation
-    if (
-      this.currentScene.id == this.GUIScene &&
-      currentTime - this.lastAsteroidSpawnTime >= 1000
-    ) {
-      Asteroid.createRandomAsteroid(
-        this,
-        ["l", "m", "s"][Math.floor(Math.random() * 3)] as "l" | "m" | "s",
-        false
-      );
+    if (this.currentScene.id == this.GUIScene && currentTime - this.lastAsteroidSpawnTime >= 1000) {
+      Asteroid.createRandomAsteroid(this, ["l", "m", "s"][Math.floor(Math.random() * 3)] as "l" | "m" | "s", false);
 
       this.lastAsteroidSpawnTime = currentTime;
     }
 
     // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
-    if (
-      currentTime - this.lastUfoSpawnTime >= 20000 - 3000 * this.level &&
-      this.currentScene.id == this.gameScene
-    ) {
+    if (currentTime - this.lastUfoSpawnTime >= 20000 - 3000 * this.level && this.currentScene.id == this.gameScene) {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
     }
@@ -519,13 +398,7 @@ export class MyGame extends Engine {
   changeLifeIcons(lives: number) {
     if (this.icons.length < lives) {
       const index = this.icons.length;
-      const icon = new Icon(
-        "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
-        770,
-        770,
-        { x: 245 + index * 20, y: 60 },
-        "white"
-      );
+      const icon = new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245 + index * 20, y: 60 }, "white");
       this.icons.push(icon);
       const iconId = this.currentScene.currentGUI!.addElement(icon);
       this.iconsID.push(iconId);
