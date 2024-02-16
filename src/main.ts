@@ -500,7 +500,6 @@ export class MyGame extends Engine {
       setTimeout(() => {
         this.spaceship.obj.setPosition(x, y, 0);
         this.flame.obj.setPosition(x, y, 0);
-        this.spaceship.rotation = { x: 0, y: 0, z: 0, w: 1 };
         this.spaceship.id = this.currentScene.addGameObject(
           this.spaceship.obj
         )!;
