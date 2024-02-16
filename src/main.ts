@@ -11,6 +11,7 @@ import { StartButton } from "./StartButton";
 import { BulletUfoOverlap } from "./asteroids/overlaps/BulletUfoOverlap";
 import { Particle } from "./asteroids/objects/particle";
 import Shuriken from "./asteroids/objects/shuriken";
+import Repair from "./asteroids/objects/repair";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -21,6 +22,7 @@ const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
 // show all boxcolliders
 export const debugMode: boolean = false;
+export const debugMode: boolean = true;
 
 export class MyGame extends Engine {
   spaceship;
@@ -33,6 +35,7 @@ export class MyGame extends Engine {
   gameScene: number | null = null;
   GUIScene: number | null = null;
   lastShurikenSpawnTime: number = Date.now();
+  lastRepairSpawnTime: number = Date.now();
   startButton: Button | null = null;
   bullets: Bullet[] = [];
   asteroids: Map<number, Asteroid> = new Map();
@@ -61,7 +64,7 @@ export class MyGame extends Engine {
   beatInterval: number = 500;
   currentBeat: typeof beat1 = beat1;
   scoreTitle: GUIText | null = null;
-  nextLifeThreshold = 10000;
+  nextLifeThreshold = 100;
   maxLifes: number = 5;
 
   // Maybe should be refactored
@@ -347,7 +350,6 @@ export class MyGame extends Engine {
       }
     });
 
-
     mainScene.started = true; // hahahahahha
   }
   override Update(): void {
@@ -383,11 +385,21 @@ export class MyGame extends Engine {
       Shuriken.createRandomShuriken(this, false);
       this.lastShurikenSpawnTime = Date.now();
     }
+    if (currentTime - this.lastRepairSpawnTime >= 5000 && this.currentScene.id == this.GUIScene) {
+      Repair.createRandomRepair(this, false);
+      this.lastRepairSpawnTime = Date.now();
+    }
 
-    // Real feature
+    // Real feature - Shuriken
     if (currentTime - this.lastShurikenSpawnTime >= 30000 && this.currentScene.id == this.gameScene) {
       Shuriken.createRandomShuriken(this, true);
       this.lastShurikenSpawnTime = Date.now();
+    }
+
+    // Real feature - Repair
+    if (currentTime - this.lastRepairSpawnTime >= 40000 && this.currentScene.id == this.gameScene) {
+      Repair.createRandomRepair(this, true);
+      this.lastRepairSpawnTime = Date.now();
     }
   }
 
@@ -401,14 +413,14 @@ export class MyGame extends Engine {
 
   // Used to handle live bar level change - changing icons
   changeLifeIcons(lives: number) {
-    for (let i = this.icons.length; i < lives; i++){
+    for (let i = this.icons.length; i < lives; i++) {
       const index = this.icons.length;
       const icon = new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245 + index * 20, y: 60 }, "white");
       this.icons.push(icon);
       const iconId = this.currentScene.currentGUI!.addElement(icon);
       this.iconsID.push(iconId);
     }
-    for (let i = this.icons.length; i > lives; i--){
+    for (let i = this.icons.length; i > lives; i--) {
       this.icons.pop();
       const iconId = this.iconsID.pop();
       if (iconId) {
@@ -428,7 +440,7 @@ export class MyGame extends Engine {
       }
       this.changeLifeIcons(this.lifes);
 
-      this.nextLifeThreshold += 10000;
+      this.nextLifeThreshold += 100;
     }
   }
 }
