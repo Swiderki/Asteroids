@@ -345,6 +345,7 @@ export class MyGame extends Engine {
 
   override Update(): void {
     // Sound playing
+    console.log(this.isUfoOnBoard)
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval) {
       this.currentBeat.play();
@@ -368,6 +369,8 @@ export class MyGame extends Engine {
     if (currentTime - this.lastUfoSpawnTime >= 2000 - 3 * this.level && this.currentScene.id == this.gameScene) {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
+      this.isUfoOnBoard = true;
+      console.log("chuj")
     }
 
     // GUI Scene animation

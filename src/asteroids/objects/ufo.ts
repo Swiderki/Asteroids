@@ -122,21 +122,31 @@ export default class Ufo extends PhysicalGameObject {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-
-    game.isUfoOnBoard = true;
-
+    if(game.isUfoOnBoard) return;
+  
+    const canvasOffset = 0; 
+    const canvasHeight = 12;
+    const canvasWidth = 22;
+    // Determine the side from which the asteroid will enter
     const edge = ["left", "right", "top", "bottom"][Math.floor(Math.random() * 4)];
-    let position: [number, number, number];
-    if (edge === "left") {
-      position = [-18, Math.random() * 16 - 8, 0];
-    } else if (edge === "right") {
-      position = [18, Math.random() * 16 - 8, 0];
-    } else if (edge === "top") {
-      position = [Math.random() * 36 - 18, 8, 0];
-    } else {
-      // bottom
-      position = [Math.random() * 36 - 18, -8, 0];
+    let position: [number, number, number] = [0, 0, 0]
+  
+    switch(edge) {
+      case "left":
+        position = [-canvasWidth / 2 - canvasOffset, Math.random() * canvasHeight - canvasHeight / 2, 0];
+        break;
+      case "right":
+        position = [canvasWidth / 2 + canvasOffset, Math.random() * canvasHeight - canvasHeight / 2, 0];
+        break;
+      case "top":
+        position = [Math.random() * canvasWidth - canvasWidth / 2, canvasHeight / 2 + canvasOffset, 0];
+        break;
+      case "bottom":
+        position = [Math.random() * canvasWidth - canvasWidth / 2, -canvasHeight / 2 - canvasOffset, 0];
+        break;
     }
+    console.log(position)
+  
 
     // Losowanie punktu docelowego, który nie jest środkiem
     let targetPosition;

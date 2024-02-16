@@ -33,8 +33,8 @@ export default class Asteroid extends PhysicalGameObject {
     this.boxCollider[1].y *= 0.56;
 
     this.mustBeTeleported = mustBeTeleported;
-    this.canvasHeight = 6;
-    this.canvasWidth = 11;
+    this.canvasHeight = canvasHeight;
+    this.canvasWidth = canvasWidth;
     this.showBoxcollider = debugMode;
     this.loadMesh().then(() => {
       for (let i = 0; i < 8; i++) this.setLineColor(i, "#73665b");
@@ -73,23 +73,29 @@ export default class Asteroid extends PhysicalGameObject {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-
-    // Losowanie rozmiaru (1 do 15)
+  
     const size = Math.floor(Math.random() * 15) + 1;
-
-    // Losowanie pozycji
+    const canvasOffset = 5; // Additional space to ensure the asteroid starts off-screen
+  
+    // Determine the side from which the asteroid will enter
     const edge = ["left", "right", "top", "bottom"][Math.floor(Math.random() * 4)];
-    let position: [number, number, number];
-    if (edge === "left") {
-      position = [-18, Math.random() * 16 - 8, 0];
-    } else if (edge === "right") {
-      position = [18, Math.random() * 16 - 8, 0];
-    } else if (edge === "top") {
-      position = [Math.random() * 36 - 18, 8, 0];
-    } else {
-      // bottom
-      position = [Math.random() * 36 - 18, -8, 0];
+    let position: [number, number, number] = [0, 0, 0]
+  
+    switch(edge) {
+      case "left":
+        position = [-11 / 2 - canvasOffset, Math.random() * .6 - 6 / 2, 0];
+        break;
+      case "right":
+        position = [11/ 2 + canvasOffset, Math.random() * 6 - 6 / 2, 0];
+        break;
+      case "top":
+        position = [Math.random() * 11 - 11 / 2, 6 / 2 + canvasOffset, 0];
+        break;
+      case "bottom":
+        position = [Math.random() * 11 - 11 / 2, -6 / 2 - canvasOffset, 0];
+        break;
     }
+  
 
     // Losowanie punktu docelowego, który nie jest środkiem
     let targetPosition;
