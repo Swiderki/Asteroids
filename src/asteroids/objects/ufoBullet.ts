@@ -19,7 +19,9 @@ export default class Bullet extends PhysicalGameObject {
     this.rotationQuaternion.z = rotationQuaternion!.z;
     this.lifeTime = 0.75;
     this.mainScene = mainScene!;
-    this.loadMesh();
+    this.loadMesh().then(() => {
+      for (let i = 0; i < 4; i++) this.setLineColor(i, "#f70a12");
+    });
     this.showBoxcollider = debugMode;
   }
   override updatePhysics(deltaTime: number): void {

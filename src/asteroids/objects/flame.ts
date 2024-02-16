@@ -6,7 +6,9 @@ export default class Flame extends PhysicalGameObject {
   canvasHeight: number = 6;
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
     super(`src/asteroids/objects/obj/flame.obj`, { position, size, rotation });
-    this.loadMesh();
+    this.loadMesh().then(() => {
+      for (let i = 0; i < 2; i++) this.setLineColor(i, "#f2661b");
+    });
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
@@ -20,7 +22,7 @@ export default class Flame extends PhysicalGameObject {
     this.velocity.x *= velocityRatio;
     this.velocity.y *= velocityRatio;
     this.velocity.z *= velocityRatio;
-    this.checkPosition()
+    this.checkPosition();
   }
 
   checkPosition(): void {

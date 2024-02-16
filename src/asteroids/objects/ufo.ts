@@ -32,7 +32,8 @@ export default class Ufo extends PhysicalGameObject {
     ];
     this.points = points!;
     this.loadMesh().then(() => {
-      for (let i = 0; i < 10; i++) this.setLineColor(i, "#ff4fdf");
+      for (let i = 0; i < 7; i++) this.setLineColor(i, "#ff4fdf");
+      for (let i = 7; i < 10; i++) this.setLineColor(i, "#0cc7e8");
     });
     this.showBoxcollider = debugMode;
 
@@ -63,7 +64,7 @@ export default class Ufo extends PhysicalGameObject {
     quaternion.z = z;
     quaternion.w = w;
 
-    const bullet = new UfoBullet([this.position.x, this.position.y, this.position.z], [0.01, 0.01, 0.01], [0, 0, 0], quaternion, this.currentScene);
+    const bullet = new UfoBullet([this.position.x, this.position.y, this.position.z], [0.5, 0.5, 0.5], [0, 0, 0], quaternion, this.currentScene);
     bullet.boxCollider = [
       { x: -0.1, y: -0.1, z: 0 },
       { x: 0.1, y: 0.1, z: -1 },

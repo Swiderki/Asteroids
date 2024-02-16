@@ -37,7 +37,9 @@ export default class Asteroid extends PhysicalGameObject {
     this.canvasHeight = canvasHeight;
     this.canvasWidth = canvasWidth;
     this.showBoxcollider = debugMode;
-    this.loadMesh();
+    this.loadMesh().then(() => {
+      for (let i = 0; i < 8; i++) this.setLineColor(i, "#73665b");
+    });
   }
 
   override updatePhysics(deltaTime: number): void {
