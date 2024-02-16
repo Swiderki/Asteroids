@@ -16,6 +16,7 @@ export class UfoBulletPlayerOverlap extends Overlap {
   }
 
   override onOverlap(): void {
+    if (this.spaceship.isBlinking) return;
     this.game.currentScene!.removeGameObject(this.obj2.id);
 
     this.collised = true;

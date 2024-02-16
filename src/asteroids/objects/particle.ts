@@ -24,13 +24,11 @@ export class Particle extends PhysicalGameObject {
       () => game.currentScene!.removeGameObject(this.id),
       Math.random() * 500 + 500
     );
-    this.loadMesh();
-  }
-
-  override Start() {
-    const color: string = ["yellow", "red", "orange"][
-      Math.floor(Math.random() * 3)
-    ];
-    for (let j = 0; j < 4; j++) setTimeout(() => this.setLineColor(j, color));
+    this.loadMesh().then(() => {
+      const color: string = ["yellow", "red", "orange"][
+        Math.floor(Math.random() * 3)
+      ];
+      for (let j = 0; j < 4; j++) setTimeout(() => this.setLineColor(j, color));
+    })
   }
 }
