@@ -11,6 +11,7 @@ import { StartButton } from "./StartButton";
 import { BulletUfoOverlap } from "./asteroids/overlaps/BulletUfoOverlap";
 import { Particle } from "./asteroids/objects/particle";
 import Shuriken from "./asteroids/objects/shuriken";
+import Repair from "./asteroids/objects/repair";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -20,7 +21,7 @@ const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
 // show all boxcolliders
-export const debugMode: boolean = false;
+export const debugMode: boolean = true;
 
 export class MyGame extends Engine {
   //? Objects
@@ -70,11 +71,12 @@ export class MyGame extends Engine {
     z: 0,
     w: 1,
   };
-
+  
   //? Game logic
   level: number = 0;
   hasAlreadyScoreText: boolean = false;
   gameScene: number | null = null;
+
 
   // Maybe should be refactored
   constructor(canvas: HTMLCanvasElement) {
@@ -368,6 +370,7 @@ export class MyGame extends Engine {
         this.startButton.border.right.color = color;
       }
     });
+
   }
   
   
@@ -405,11 +408,21 @@ export class MyGame extends Engine {
       Shuriken.createRandomShuriken(this, false);
       this.lastShurikenSpawnTime = Date.now();
     }
+    if (currentTime - this.lastRepairSpawnTime >= 5000 && this.currentScene.id == this.GUIScene) {
+      Repair.createRandomRepair(this, false);
+      this.lastRepairSpawnTime = Date.now();
+    }
 
-    // Real feature
+    // Real feature - Shuriken
     if (currentTime - this.lastShurikenSpawnTime >= 30000 && this.currentScene.id == this.gameScene) {
       Shuriken.createRandomShuriken(this, true);
       this.lastShurikenSpawnTime = Date.now();
+    }
+
+    // Real feature - Repair
+    if (currentTime - this.lastRepairSpawnTime >= 40000 && this.currentScene.id == this.gameScene) {
+      Repair.createRandomRepair(this, true);
+      this.lastRepairSpawnTime = Date.now();
     }
   }
 
@@ -421,6 +434,7 @@ export class MyGame extends Engine {
   changeBestResultText(text: string) {
     this.bestResultText.text = text;
   }
+
 
 
   // LIFES
@@ -462,7 +476,7 @@ export class MyGame extends Engine {
       }
       this.changeLifeIcons(this.lifes);
 
-      this.nextLifeThreshold += 10000;
+      this.nextLifeThreshold += 100;
     }
   }
 
