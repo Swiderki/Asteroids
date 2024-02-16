@@ -21,7 +21,6 @@ const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
 // show all boxcolliders
-export const debugMode: boolean = false;
 export const debugMode: boolean = true;
 
 export class MyGame extends Engine {
