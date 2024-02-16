@@ -60,6 +60,7 @@ export class AsteroidPlayerOverlap extends Overlap {
 
     this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
     this.game.astOnBoard -= 1;
+    this.game.astCount++;
     this.game.evaluateAsteroids();
   }
 }

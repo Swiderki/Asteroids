@@ -116,11 +116,12 @@ export class MyGame extends Engine {
 
   evaluateAsteroids() {
     console.log(this.astCount);
-
+    
     const n = 4 + this.level;
     if (this.astCount < n + n * 2 + n * 2 * 2) return;
-
+    console.log("NEXT LEVEL")
     for (let i = 0; i < n + 1; i++) {
+
       Asteroid.createRandomAsteroid(this, "l", true);
     }
 
@@ -129,7 +130,7 @@ export class MyGame extends Engine {
   }
 
   handleSpaceshipMove(deltaTime: number) {
-    const rotationAmount = Math.PI * 1.5;
+    const rotationAmount = Math.PI * 2;
 
     if (this.currentScene.id === this.GUIScene || this.spaceShipKilled) return;
 
@@ -156,7 +157,7 @@ export class MyGame extends Engine {
     let direction = { x: 0, y: 0, z: 0 };
 
     QuaternionUtils.rotateVector(this.spaceship.rotation, forwardVector, direction);
-    const speed = 3 * deltaTime;
+    const speed = 5 * deltaTime;
     direction.x *= speed;
     direction.y *= speed;
     direction.z *= speed;
@@ -363,7 +364,7 @@ export class MyGame extends Engine {
 
     // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
-    if (currentTime - this.lastUfoSpawnTime >= 2000 - 3000 * this.level && this.currentScene.id == this.gameScene) {
+    if (currentTime - this.lastUfoSpawnTime >= 2000 - 3 * this.level && this.currentScene.id == this.gameScene) {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
     }

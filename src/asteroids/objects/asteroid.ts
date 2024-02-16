@@ -33,8 +33,8 @@ export default class Asteroid extends PhysicalGameObject {
     this.boxCollider[1].y *= 0.56;
 
     this.mustBeTeleported = mustBeTeleported;
-    this.canvasHeight = canvasHeight;
-    this.canvasWidth = canvasWidth;
+    this.canvasHeight = 6;
+    this.canvasWidth = 11;
     this.showBoxcollider = debugMode;
     this.loadMesh().then(() => {
       for (let i = 0; i < 8; i++) this.setLineColor(i, "#73665b");
