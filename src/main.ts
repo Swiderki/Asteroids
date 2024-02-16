@@ -19,6 +19,7 @@ const thrustSound = new Audio("src/asteroids/sounds/thrust.wav");
 const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 
+// show all boxcolliders
 export const debugMode: boolean = false;
 
 export class MyGame extends Engine {
@@ -61,6 +62,7 @@ export class MyGame extends Engine {
   currentBeat: typeof beat1 = beat1;
   scoreTitle: GUIText | null = null;
   nextLifeThreshold = 100;
+  maxLifes: number = 5;
 
   // Maybe should be refactored
   constructor(canvas: HTMLCanvasElement) {
@@ -418,7 +420,9 @@ export class MyGame extends Engine {
 
     const score = parseInt(this.resultText.text);
     if (score >= this.nextLifeThreshold) {
-      this.lifes++;
+      if (this.lifes < this.maxLifes) {
+        this.lifes++;
+      }
       this.changeLifeIcons(this.lifes);
 
       this.nextLifeThreshold += 100;
