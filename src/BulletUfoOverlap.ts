@@ -29,6 +29,7 @@ export class BulletUfoOverlap extends Overlap {
     this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 200));
     this.game.currentScene!.removeGameObject(this.bulletID);
     this.game.currentScene!.removeGameObject(this.ufoID);
+    this.game.ufos.delete(this.ufoID);
     this.game.spawnParticles([this.obj2.position.x, this.obj2.position.y, this.obj2.position.z], 8);
   }
 }

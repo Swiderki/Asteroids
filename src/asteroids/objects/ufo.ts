@@ -38,7 +38,9 @@ export default class Ufo extends PhysicalGameObject {
       { x: 0.4, y: -0.17, z: -1 },
     ];
     this.points = points!;
-    this.loadMesh();
+    this.loadMesh().then(() => {
+      for (let i = 0; i<10; i++) this.setLineColor(i, "#ff4fdf")
+    });
     this.showBoxcollider = true;
 
     // Tworzymy obiekt dźwięku i ustawiamy opcję loop
