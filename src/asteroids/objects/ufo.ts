@@ -3,7 +3,7 @@ import { Vec3DTuple } from "drake-engine";
 import UfoBullet from "./ufoBullet";
 import { Scene } from "drake-engine";
 import { UfoBulletPlayerOverlap } from "../overlaps/UfoBulletPlayerOverlap";
-import { MyGame } from "../../main";
+import { MyGame, debugMode } from "../../main";
 import Spaceship from "./spaceship";
 import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
 
@@ -21,15 +21,7 @@ export default class Ufo extends PhysicalGameObject {
   game: MyGame;
   points: number;
 
-  constructor(
-    position?: Vec3DTuple,
-    size?: Vec3DTuple,
-    rotation?: Vec3DTuple,
-    currentScene?: Scene,
-    spaceship?: Spaceship,
-    game?: MyGame,
-    points?: number
-  ) {
+  constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, currentScene?: Scene, spaceship?: Spaceship, game?: MyGame, points?: number) {
     super(`src/asteroids/objects/obj/ufo.obj`, { position, size, rotation });
     this.currentScene = currentScene!;
     this.spaceship = spaceship!;
@@ -40,9 +32,10 @@ export default class Ufo extends PhysicalGameObject {
     ];
     this.points = points!;
     this.loadMesh().then(() => {
-      for (let i = 0; i<10; i++) this.setLineColor(i, "#ff4fdf")
+      for (let i = 0; i < 7; i++) this.setLineColor(i, "#ff4fdf");
+      for (let i = 7; i < 10; i++) this.setLineColor(i, "#0cc7e8");
     });
-    this.showBoxcollider = true;
+    this.showBoxcollider = debugMode;
 
     // Tworzymy obiekt dźwięku i ustawiamy opcję loop
     this.sound = soucerEasy;
@@ -71,13 +64,7 @@ export default class Ufo extends PhysicalGameObject {
     quaternion.z = z;
     quaternion.w = w;
 
-    const bullet = new UfoBullet(
-      [this.position.x, this.position.y, this.position.z],
-      [0.01, 0.01, 0.01],
-      [0, 0, 0],
-      quaternion,
-      this.currentScene
-    );
+    const bullet = new UfoBullet([this.position.x, this.position.y, this.position.z], [0.5, 0.5, 0.5], [0, 0, 0], quaternion, this.currentScene);
     bullet.boxCollider = [
       { x: -0.1, y: -0.1, z: 0 },
       { x: 0.1, y: 0.1, z: -1 },
@@ -90,23 +77,15 @@ export default class Ufo extends PhysicalGameObject {
     };
 
     bullet.velocity = {
-      x:
-        (bullet.velocity.x /
-          Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) *
-        20,
-      y:
-        (bullet.velocity.y /
-          Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) *
-        20,
+      x: (bullet.velocity.x / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20,
+      y: (bullet.velocity.y / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20,
       z: 0,
     };
 
     const ufoId = this.currentScene.addGameObject(bullet);
     this.bullets.set(ufoId, bullet);
 
-    this.currentScene.addOverlap(
-      new UfoBulletPlayerOverlap(this.spaceship, bullet, this.game)
-    );
+    this.currentScene.addOverlap(new UfoBulletPlayerOverlap(this.spaceship, bullet, this.game));
   }
 
   checkPosition(): void {
@@ -137,9 +116,7 @@ export default class Ufo extends PhysicalGameObject {
 
     game.isUfoOnBoard = true;
 
-    const edge = ["left", "right", "top", "bottom"][
-      Math.floor(Math.random() * 4)
-    ];
+    const edge = ["left", "right", "top", "bottom"][Math.floor(Math.random() * 4)];
     let position: [number, number, number];
     if (edge === "left") {
       position = [-18, Math.random() * 16 - 8, 0];
@@ -158,30 +135,15 @@ export default class Ufo extends PhysicalGameObject {
       targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
     } while (targetPosition[0] === 0 && targetPosition[1] === 0);
 
-    
     // Increase in speed by (this.level) (base value is 4)
     const velocityMagnitude = 4 + game.level;
-    const velocityDirection = [
-      targetPosition[0] - position[0],
-      targetPosition[1] - position[1],
-    ];
-    const normalizedVelocity = velocityDirection.map(
-      (v) =>
-        v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
-    );
+    const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1]];
+    const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.01, 0.01, 0.01];
 
     // Tworzenie ufo
-    const ufo = new Ufo(
-      position,
-      size,
-      [0, 0, 0],
-      game.currentScene,
-      game.spaceship.obj,
-      game,
-      Number(game.resultText.text)
-    );
+    const ufo = new Ufo(position, size, [0, 0, 0], game.currentScene, game.spaceship.obj, game, Number(game.resultText.text));
 
     ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const ufoId = game.currentScene.addGameObject(ufo);
@@ -190,8 +152,6 @@ export default class Ufo extends PhysicalGameObject {
 
     if (game.currentScene.id != game.gameScene) return;
 
-    game.currentScene.addOverlap(
-      new UfoPlayerOverlap(game.spaceship.obj, ufo, game)
-    );
+    game.currentScene.addOverlap(new UfoPlayerOverlap(game.spaceship.obj, ufo, game));
   }
 }
