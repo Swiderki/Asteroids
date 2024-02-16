@@ -346,6 +346,9 @@ export class MyGame extends Engine {
         this.startButton!.border.right.color = color;
       }
     });
+
+
+    mainScene.started = true; // hahahahahha
   }
   override Update(): void {
     // Sound playing
@@ -398,14 +401,14 @@ export class MyGame extends Engine {
 
   // Used to handle live bar level change - changing icons
   changeLifeIcons(lives: number) {
-    if (this.icons.length < lives) {
+    for (let i = this.icons.length; i < lives; i++){
       const index = this.icons.length;
       const icon = new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245 + index * 20, y: 60 }, "white");
       this.icons.push(icon);
       const iconId = this.currentScene.currentGUI!.addElement(icon);
       this.iconsID.push(iconId);
     }
-    if (this.icons.length > lives) {
+    for (let i = this.icons.length; i > lives; i--){
       this.icons.pop();
       const iconId = this.iconsID.pop();
       if (iconId) {
