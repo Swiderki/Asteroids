@@ -501,7 +501,7 @@ export class MyGame extends Engine {
     }
 
     // Real feature
-    if (currentTime - this.lastShurikenSpawnTime >= 1000 && this.currentScene.id == this.gameScene) {
+    if (currentTime - this.lastShurikenSpawnTime >= 30000 && this.currentScene.id == this.gameScene) {
       Shuriken.createRandomShuriken(this, true);
       this.lastShurikenSpawnTime = Date.now();
     }
