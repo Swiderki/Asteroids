@@ -24,6 +24,7 @@ export class AsteroidPlayerOverlap extends Overlap {
     if (this.spaceship.isBlinking) return;
     if (!this.game.currentScene) return;
     if (this.collised) return;
+    this.game.updateLifes()
     this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);
