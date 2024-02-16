@@ -18,7 +18,6 @@ export class UfoShurikenOverlap extends Overlap {
   }
 
   override onOverlap() {
-    this.game.astCount++;
     bangLarge.play();
     this.game.updateLifes()
 
