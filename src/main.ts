@@ -517,7 +517,7 @@ export class MyGame extends Engine {
 
   // Used to handle live bar level change - changing icons
   changeLifeIcons(lives: number) {
-    while (this.icons.length < lives) {
+    if (this.icons.length < lives) {
       const index = this.icons.length;
       const icon = new Icon(
         "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
@@ -530,7 +530,7 @@ export class MyGame extends Engine {
       const iconId = this.currentScene.currentGUI!.addElement(icon);
       this.iconsID.push(iconId);
     }
-    while (this.icons.length > lives) {
+    if (this.icons.length > lives) {
       this.icons.pop();
       const iconId = this.iconsID.pop();
       if (iconId) {
