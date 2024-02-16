@@ -34,9 +34,31 @@ export class AsteroidPlayerOverlap extends Overlap {
     } else {
       bangSmall.play();
     }
+    if (this.asteroid.metricalSize == "l") {
+      bangLarge.play();
+      
+      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+    }
+
+    if (this.asteroid.metricalSize == "m") {
+      bangMedium.play();
+      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+    }
+    
+    if (this.asteroid.metricalSize == "s") {
+      bangSmall.play();
+    }
     if (this.game.lifes <= 0) {
       this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 5);
       this.game.runEnd();
     } else this.spaceship.runBlinking();
+    this.game.currentScene!.removeGameObject(this.asteroid.id);
+    this.game.asteroids.delete(this.asteroid.id);
+
+    this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
+    this.game.astOnBoard -= 1;
+    this.game.evaluateAsteroids();
   }
 }
