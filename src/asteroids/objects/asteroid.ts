@@ -8,12 +8,36 @@ export default class Asteroid extends PhysicalGameObject {
   canvasWidth: number;
   canvasHeight: number;
   mustBeTeleported: boolean;
-  constructor(asteroidNumber: number, asteroidSize: 'l' | 'm' | 's' , canvasWidth: number, canvasHeight: number, mustBeTeleported: boolean, position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
-    super(`src/asteroids/objects/obj/asteroid-${asteroidSize}-${asteroidNumber}.obj`, { position, size, rotation });
+  constructor(
+    asteroidNumber: number,
+    asteroidSize: "l" | "m" | "s",
+    canvasWidth: number,
+    canvasHeight: number,
+    mustBeTeleported: boolean,
+    position?: Vec3DTuple,
+    size?: Vec3DTuple,
+    rotation?: Vec3DTuple
+  ) {
+    super(
+      `src/asteroids/objects/obj/asteroid-${asteroidSize}-${asteroidNumber}.obj`,
+      { position, size, rotation }
+    );
     this.metricalSize = asteroidSize;
-    if (asteroidSize == "s") this.boxCollider = [{x: -0.4, y: 0.4, z: 0}, {x: 0.4, y: -0.4, z: -1}];
-    else if (asteroidSize == "m") this.boxCollider = [{x: -1, y: 1, z: 0}, {x: 1, y: -1, z: -1}];
-    else this.boxCollider = [{x: -2, y: 2, z: 0}, {x: 2, y: -2, z: -1}];
+    if (asteroidSize == "s")
+      this.boxCollider = [
+        { x: -0.4, y: 0.4, z: 0 },
+        { x: 0.4, y: -0.4, z: -1 },
+      ];
+    else if (asteroidSize == "m")
+      this.boxCollider = [
+        { x: -1, y: 1, z: 0 },
+        { x: 1, y: -1, z: -1 },
+      ];
+    else
+      this.boxCollider = [
+        { x: -2, y: 2, z: 0 },
+        { x: 2, y: -2, z: -1 },
+      ];
 
     this.boxCollider[0].x *= 0.56;
     this.boxCollider[0].y *= 0.56;
@@ -56,7 +80,11 @@ export default class Asteroid extends PhysicalGameObject {
     }
   }
 
-  static createRandomAsteroid(game: MyGame, type: "l" | "m" | "s", mustBeTeleported: boolean) {
+  static createRandomAsteroid(
+    game: MyGame,
+    type: "l" | "m" | "s",
+    mustBeTeleported: boolean
+  ) {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
@@ -99,15 +127,11 @@ export default class Asteroid extends PhysicalGameObject {
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
 
     // Tworzenie asteroidy
-    const ast = new Asteroid(
-      size,
-      type,
-      16,
-      8,
-      mustBeTeleported,
-      position,
-      [0.007 + game.level / 1000, 0.007 + game.level / 1000, 0.007 + game.level / 1000]
-    );
+    const ast = new Asteroid(size, type, 16, 8, mustBeTeleported, position, [
+      0.007 + game.level / 1000,
+      0.007 + game.level / 1000,
+      0.007 + game.level / 1000,
+    ]);
 
     ast.boxCollider![0].x += 0.08;
     ast.boxCollider![0].y += 0.08;
@@ -130,7 +154,7 @@ export default class Asteroid extends PhysicalGameObject {
     game: MyGame,
     asteroidType: "l" | "m" | "s",
     position: [number, number, number]
-  ) {
+  ): Asteroid {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
@@ -183,11 +207,12 @@ export default class Asteroid extends PhysicalGameObject {
 
     game.asteroids.set(astId, ast);
 
-    if (game.currentScene.id != game.gameScene) return;
+    if (game.currentScene.id == game.gameScene) {
+      game.currentScene.addOverlap(
+        new AsteroidPlayerOverlap(game.spaceship.obj, ast, game)
+      );
+    }
 
-    game.currentScene.addOverlap(
-      new AsteroidPlayerOverlap(game.spaceship.obj, ast, game)
-    );
+    return ast;
   }
 }
-

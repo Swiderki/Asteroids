@@ -496,13 +496,13 @@ export class MyGame extends Engine {
 
     // GUI Scene animation
     if (currentTime - this.lastShurikenSpawnTime >= 1000 && this.currentScene.id == this.GUIScene) {
-      Shuriken.createRandomShuriken(this);
+      Shuriken.createRandomShuriken(this, false);
       this.lastShurikenSpawnTime = Date.now();
     }
 
     // Real feature
     if (currentTime - this.lastShurikenSpawnTime >= 1000 && this.currentScene.id == this.gameScene) {
-      Shuriken.createRandomShuriken(this);
+      Shuriken.createRandomShuriken(this, true);
       this.lastShurikenSpawnTime = Date.now();
     }
   }

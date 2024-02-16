@@ -1,5 +1,9 @@
 import { PhysicalGameObject, QuaternionUtils, Vec3DTuple } from "drake-engine";
 import { MyGame } from "../../main";
+import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
+import { SpaceshipShurikenOverlap } from "../overlaps/SpaceshipShurikenOverlap";
+import { AsteroidShurikenOverlap } from "../overlaps/AsteroidShurikenOverlap";
+import { UfoShurikenOverlap } from "../overlaps/UfoShurikenOverlap";
 
 export default class Shuriken extends PhysicalGameObject {
   rotationQuaternion: { x: number; y: number; z: number; w: number } = {
@@ -36,12 +40,10 @@ export default class Shuriken extends PhysicalGameObject {
     this.applyQuaternion(this.rotationQuaternion);
   }
 
-  static createRandomShuriken(game: MyGame) {
+  static createRandomShuriken(game: MyGame, withOverlap: boolean) {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-
-    game.isUfoOnBoard = true;
 
     const edge = ["left", "right", "top", "bottom"][
       Math.floor(Math.random() * 4)
@@ -77,22 +79,29 @@ export default class Shuriken extends PhysicalGameObject {
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.01, 0.01, 0.01];
 
-    // Tworzenie ufo
-    const ufo = new Shuriken(
+    // Tworzenie shurikenu
+    const shuriken = new Shuriken(
       position,
       size,
       [0, 0, 0],
     );
 
-    ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
-    const ufoId = game.currentScene.addGameObject(ufo);
+    shuriken.velocity = { x: velocity[0], y: velocity[1], z: 0 };
+    
+    game.currentScene.addGameObject(shuriken);
 
-    // game.ufos.set(ufoId, ufo);
+    if (!withOverlap) return;
 
-    // if (game.currentScene.id != game.gameScene) return;
+    if (game.currentScene.id != game.gameScene) return;
 
-    // game.currentScene.addOverlap(
-    //   new UfoPlayerOverlap(game.spaceship.obj, ufo, game)
-    // );
+    game.asteroids.forEach(ast => {
+      game.currentScene.addOverlap(new AsteroidShurikenOverlap(shuriken, ast, game));
+    });
+
+    game.ufos.forEach(ufo => {
+      game.currentScene.addOverlap(new UfoShurikenOverlap(shuriken, ufo, game));
+    });
+
+    game.currentScene.addOverlap(new SpaceshipShurikenOverlap(game.spaceship.obj, shuriken, game));
   }
 }
