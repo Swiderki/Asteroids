@@ -19,6 +19,8 @@ export class UfoPlayerOverlap extends Overlap {
     if (this.game.spaceship.obj.isBlinking) return;
     if (!this.game.currentScene) return;
     if (this.collised) return;
+    this.game.updateLifes()
+
     this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);

@@ -30,6 +30,7 @@ export class BulletAsteroidOverlap extends Overlap {
 
   override onOverlap() {
     this.game.astCount++;
+    this.game.updateLifes()
 
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();

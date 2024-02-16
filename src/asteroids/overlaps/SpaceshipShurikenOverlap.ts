@@ -16,6 +16,8 @@ export class SpaceshipShurikenOverlap extends Overlap {
   }
 
   override onOverlap(): void {
+    this.game.updateLifes()
+
     if (this.spaceship.isBlinking) return;
 
     this.collised = true;

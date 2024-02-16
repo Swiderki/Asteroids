@@ -22,6 +22,8 @@ export class AsteroidShurikenOverlap extends Overlap {
 
   override onOverlap() {
     this.game.astCount++;
+    this.game.updateLifes()
+
 
     let newSize = ""
 
