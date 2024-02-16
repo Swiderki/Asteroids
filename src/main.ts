@@ -128,19 +128,19 @@ export class MyGame extends Engine {
     this.astCount = 0;
   }
 
-  handleSpaceshipMove() {
-    const rotationAmount = Math.PI / 100;
+  handleSpaceshipMove(deltaTime: number) {
+    const rotationAmount = Math.PI * 1.5;
 
     if (this.currentScene.id === this.GUIScene || this.spaceShipKilled) return;
 
     if (this.keysPressed.has("w")) {
-      this.moveForward();
+      this.moveForward(deltaTime);
     }
     if (this.keysPressed.has("a")) {
-      this.rotateLeft(rotationAmount);
+      this.rotateLeft(rotationAmount, deltaTime);
     }
     if (this.keysPressed.has("d")) {
-      this.rotateRight(rotationAmount);
+      this.rotateRight(rotationAmount, deltaTime);
     }
     if (this.keysPressed.has("l") && !this.isTeleporting) {
       this.teleport();
@@ -150,13 +150,13 @@ export class MyGame extends Engine {
     }
   }
 
-  moveForward() {
+  moveForward(deltaTime: number) {
     this.flame.obj.setPosition(this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z);
     const forwardVector = { x: 0, y: 1, z: 0 };
     let direction = { x: 0, y: 0, z: 0 };
 
     QuaternionUtils.rotateVector(this.spaceship.rotation, forwardVector, direction);
-    const speed = 0.02;
+    const speed = 3 * deltaTime;
     direction.x *= speed;
     direction.y *= speed;
     direction.z *= speed;
@@ -171,13 +171,13 @@ export class MyGame extends Engine {
     this.spaceship.obj.velocity.z += direction.z;
   }
 
-  rotateLeft(rotationAmount: number) {
-    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, rotationAmount);
+  rotateLeft(rotationAmount: number,deltaTime: number) {
+    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, rotationAmount * deltaTime);
     this.applyRotation();
   }
 
-  rotateRight(rotationAmount: number) {
-    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: -1 }, rotationAmount);
+  rotateRight(rotationAmount: number, deltaTime: number) {
+    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: -1 }, rotationAmount * deltaTime);
     this.applyRotation();
   }
 
@@ -231,7 +231,6 @@ export class MyGame extends Engine {
   handleKeyDown(e: KeyboardEvent) {
     this.keysPressed.add(e.key);
 
-    this.handleSpaceshipMove();
   }
 
   handleKeyUp(e: KeyboardEvent) {
@@ -240,7 +239,6 @@ export class MyGame extends Engine {
     if (e.key == "w") {
       this.flame.obj.setPosition(1231231231, 123123123, 123123123);
       this.keysPressed.delete(e.key);
-      this.handleSpaceshipMove();
       thrustSound.pause();
       thrustSound.currentTime = 0;
     }
@@ -353,7 +351,7 @@ export class MyGame extends Engine {
       this.lastBeatTime = currentTime;
     }
 
-    this.handleSpaceshipMove();
+    this.handleSpaceshipMove(this.deltaTime);
 
     // Scene animation
     if (this.currentScene.id == this.GUIScene && currentTime - this.lastAsteroidSpawnTime >= 1000) {

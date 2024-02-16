@@ -26,7 +26,6 @@ export default class Asteroid extends PhysicalGameObject {
         { x: -2, y: 2, z: 0 },
         { x: 2, y: -2, z: -1 },
       ];
-
     this.boxCollider[0].x *= 0.56;
     this.boxCollider[0].y *= 0.56;
 
