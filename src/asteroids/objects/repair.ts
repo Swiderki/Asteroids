@@ -5,14 +5,12 @@ import { SpaceshipRepairOverlap } from "../overlaps/SpaceshipRepairOverlap";
 export default class Repair extends PhysicalGameObject {
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
     super(`src/asteroids/objects/obj/repair.obj`, { position, size, rotation });
-    this.loadMesh().then(() => {
-      for (let i = 0; i < 24; i++) this.setLineColor(i, "#999999");
-    });
     this.boxCollider = [
       { x: -0.4, y: -0.4, z: 0 },
       { x: 0.4, y: 0.4, z: -1 },
     ];
     this.showBoxcollider = debugMode;
+
   }
 
   override updatePhysics(deltaTime: number): void {
@@ -61,5 +59,8 @@ export default class Repair extends PhysicalGameObject {
     if (game.currentScene.id != game.gameScene) return;
 
     game.currentScene.addOverlap(new SpaceshipRepairOverlap(game.spaceship.obj, repair, game));
+  }
+  override Start(): void {
+    for (let i = 0; i < 23; i++) this.setLineColor(i, "#999999");
   }
 }

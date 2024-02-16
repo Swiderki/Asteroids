@@ -255,6 +255,7 @@ export class MyGame extends Engine {
     this.addEventListeners();
 
     this.setCurrentScene(this.GUIScene!);
+    this.currentScene.started = true;
     mainScene.started = true;
   }
 
