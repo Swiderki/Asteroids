@@ -16,9 +16,10 @@ import Repair from "./asteroids/objects/repair";
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 
-const thrustSound = new Audio("src/asteroids/sounds/thrust.wav");
+const thrust = new Audio("src/asteroids/sounds/thrust.wav");
 const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
+const fire = new Audio("src/asteroids/sounds/fire.wav");
 
 // show all boxcolliders
 export const debugMode: boolean = true;
@@ -208,6 +209,7 @@ export class MyGame extends Engine {
 
   shoot() {
     this.isShooting = true;
+    fire.play();
     const bullet = new Bullet([this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z], [0.5, 0.5, 0.5], [0, 0, 0], this.spaceship.rotation, this.scenes.get(this.gameScene!)!);
 
     // bullet.showBoxcollider = true;
@@ -231,7 +233,9 @@ export class MyGame extends Engine {
 
   handleKeyDown(e: KeyboardEvent) {
     this.keysPressed.add(e.key);
-
+    if(e.key == "w") {
+      thrust.play();
+    }
   }
 
   handleKeyUp(e: KeyboardEvent) {
@@ -239,9 +243,6 @@ export class MyGame extends Engine {
 
     if (e.key == "w") {
       this.flame.obj.setPosition(1231231231, 123123123, 123123123);
-      this.keysPressed.delete(e.key);
-      thrustSound.pause();
-      thrustSound.currentTime = 0;
     }
   }
 
