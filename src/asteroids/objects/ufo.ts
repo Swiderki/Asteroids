@@ -69,10 +69,19 @@ export default class Ufo extends PhysicalGameObject {
       { x: -0.1, y: -0.1, z: 0 },
       { x: 0.1, y: 0.1, z: -1 },
     ];
+    // added spread
+    const spreadRange = 3; 
+    const randomSpreadX = (Math.random() - 0.5) * 2 * spreadRange;
+    const randomSpreadY = (Math.random() - 0.5) * 2 * spreadRange;
+
+    // spread vector
+    const targetX = this.game.spaceship.obj.position.x - this.position.x + randomSpreadX;
+    const targetY = this.game.spaceship.obj.position.y - this.position.y + randomSpreadY;
+
 
     bullet.velocity = {
-      x: this.game.spaceship.obj.position.x - this.position.x,
-      y: this.game.spaceship.obj.position.y - this.position.y,
+      x: targetX- this.position.x,
+      y: targetY - this.position.y,
       z: 0,
     };
 
