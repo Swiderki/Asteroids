@@ -39,6 +39,7 @@ export default class Ufo extends PhysicalGameObject {
 
     // Tworzymy obiekt dźwięku i ustawiamy opcję loop
     this.sound = soucerEasy;
+    this.sound.volume = 0.3;
   }
 
   override updatePhysics(deltaTime: number): void {
@@ -70,7 +71,7 @@ export default class Ufo extends PhysicalGameObject {
       { x: 0.1, y: 0.1, z: -1 },
     ];
     // added spread
-    const spreadRange = 3; 
+    const spreadRange = 7;
     const randomSpreadX = (Math.random() - 0.5) * 2 * spreadRange;
     const randomSpreadY = (Math.random() - 0.5) * 2 * spreadRange;
 
@@ -78,9 +79,8 @@ export default class Ufo extends PhysicalGameObject {
     const targetX = this.game.spaceship.obj.position.x - this.position.x + randomSpreadX;
     const targetY = this.game.spaceship.obj.position.y - this.position.y + randomSpreadY;
 
-
     bullet.velocity = {
-      x: targetX- this.position.x,
+      x: targetX - this.position.x,
       y: targetY - this.position.y,
       z: 0,
     };
@@ -122,16 +122,16 @@ export default class Ufo extends PhysicalGameObject {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-    if(game.isUfoOnBoard) return;
-  
-    const canvasOffset = 0; 
+    if (game.isUfoOnBoard) return;
+
+    const canvasOffset = 0;
     const canvasHeight = 12;
     const canvasWidth = 22;
     // Determine the side from which the asteroid will enter
     const edge = ["left", "right", "top", "bottom"][Math.floor(Math.random() * 4)];
-    let position: [number, number, number] = [0, 0, 0]
-  
-    switch(edge) {
+    let position: [number, number, number] = [0, 0, 0];
+
+    switch (edge) {
       case "left":
         position = [-canvasWidth / 2 - canvasOffset, Math.random() * canvasHeight - canvasHeight / 2, 0];
         break;
@@ -145,8 +145,6 @@ export default class Ufo extends PhysicalGameObject {
         position = [Math.random() * canvasWidth - canvasWidth / 2, -canvasHeight / 2 - canvasOffset, 0];
         break;
     }
-    console.log(position)
-  
 
     // Losowanie punktu docelowego, który nie jest środkiem
     let targetPosition;

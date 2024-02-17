@@ -17,7 +17,7 @@ export default class Bullet extends PhysicalGameObject {
     this.rotationQuaternion.x = rotationQuaternion!.x;
     this.rotationQuaternion.y = rotationQuaternion!.y;
     this.rotationQuaternion.z = rotationQuaternion!.z;
-    this.lifeTime = 0.4;
+    this.lifeTime = 0.8;
     this.mainScene = mainScene!;
     this.loadMesh().then(() => {
       for (let i = 0; i < 4; i++) this.setLineColor(i, "#02e838");

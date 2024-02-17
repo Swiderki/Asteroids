@@ -1,10 +1,4 @@
-import {
-  GameObject,
-  PhysicalGameObject,
-  QuaternionUtils,
-  Scene,
-  Vec3DTuple,
-} from "drake-engine";
+import { GameObject, PhysicalGameObject, QuaternionUtils, Scene, Vec3DTuple } from "drake-engine";
 import { MyGame } from "../../main";
 
 export class Particle extends PhysicalGameObject {
@@ -24,7 +18,7 @@ export class Particle extends PhysicalGameObject {
     };
     // game ref
     this.game = game;
-    
+
     // dont forget to load mesh!!!!
     // this.loadMesh();
     // setTimeout(
@@ -39,16 +33,13 @@ export class Particle extends PhysicalGameObject {
     // })
   }
   override Start(): void {
-    console.log(123)
     // chose random color
     const color: string = ["yellow", "red", "orange"][Math.floor(Math.random() * 3)];
 
     // appaly it to all lines
-    for (let j = 0; j < 4; j++) 
-      this.setLineColor(j, color);
+    for (let j = 0; j < 4; j++) this.setLineColor(j, color);
 
     // remove after random time(to give it 'spark' effect)
     setTimeout(() => this.game.currentScene!.removeGameObject(this.id), Math.random() * 500 + 500);
   }
-
 }

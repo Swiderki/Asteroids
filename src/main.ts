@@ -20,9 +20,10 @@ const thrust = new Audio("src/asteroids/sounds/thrust.wav");
 const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 const fire = new Audio("src/asteroids/sounds/fire.wav");
+fire.volume = 0.7;
 
 // show all boxcolliders
-export const debugMode: boolean = true;
+export const debugMode: boolean = false;
 
 export class MyGame extends Engine {
   //? Objects
@@ -366,7 +367,7 @@ export class MyGame extends Engine {
 
     // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
-    if (currentTime - this.lastUfoSpawnTime >= 2000 - 3 * this.level && this.currentScene.id == this.gameScene) {
+    if (currentTime - this.lastUfoSpawnTime >= 20000 - 3 * this.level && this.currentScene.id == this.gameScene) {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
       this.isUfoOnBoard = true;
@@ -384,7 +385,7 @@ export class MyGame extends Engine {
     }
 
     // Real feature - Shuriken
-    if (currentTime - this.lastShurikenSpawnTime >= 30000 && this.currentScene.id == this.gameScene) {
+    if (currentTime - this.lastShurikenSpawnTime >= 25000 && this.currentScene.id == this.gameScene) {
       Shuriken.createRandomShuriken(this, true);
       this.lastShurikenSpawnTime = Date.now();
     }
