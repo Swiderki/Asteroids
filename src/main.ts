@@ -374,7 +374,6 @@ export class MyGame extends Engine {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
       this.isUfoOnBoard = true;
-      console.log("pojaiwenie sie ufo");
     }
 
     // GUI Scene animation
@@ -464,6 +463,7 @@ export class MyGame extends Engine {
 
   runEnd() {
     this.currentScene!.removeGameObject(this.spaceship.obj.id);
+    this.currentScene!.removeGameObject(this.flame.obj.id);
     this.spaceShipKilled = true;
     const result = parseInt(this.resultText.text);
     setTimeout(() => {
@@ -506,6 +506,7 @@ export class MyGame extends Engine {
 
     this.createSpaceshipAndFlame();
     this.scenes.get(this.gameScene!)!.addGameObject(this.spaceship.obj);
+    this.scenes.get(this.gameScene!)!.addGameObject(this.flame.obj);
   }
 
   displayEndGameMessage(score: number) {
@@ -528,6 +529,7 @@ export class MyGame extends Engine {
     this.flame.rotation = { x: 0, y: 0, z: 0, w: 1 };
     this.spaceship.obj = new Spaceship([0, 0, 0], [0.01, 0.01, 0.01]);
     this.spaceship.rotation = { x: 0, y: 0, z: 0, w: 1 };
+    this.flame.obj.setPosition(123123, 123123, 123123);
   }
 }
 
