@@ -24,8 +24,8 @@ export default class Bullet extends PhysicalGameObject {
     });
 
     this.boxCollider = [
-      { x: -0.1, y: -0.1, z: 0 },
-      { x: 0.1, y: 0.1, z: -1 },
+      { x: -0.2, y: -0.2, z: 0 },
+      { x: 0.2, y: 0.2, z: -1 },
     ];
     this.showBoxcollider = debugMode;
   }

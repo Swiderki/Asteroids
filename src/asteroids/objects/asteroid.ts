@@ -10,34 +10,47 @@ export default class Asteroid extends PhysicalGameObject {
   mustBeTeleported: boolean;
   constructor(asteroidNumber: number, asteroidSize: "l" | "m" | "s", canvasWidth: number, canvasHeight: number, mustBeTeleported: boolean, position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
     super(`src/asteroids/objects/obj/asteroid-${asteroidSize}-${asteroidNumber}.obj`, { position, size, rotation });
+
     this.metricalSize = asteroidSize;
-    if (asteroidSize == "s")
-      this.boxCollider = [
-        { x: -0.4, y: 0.4, z: 0 },
-        { x: 0.4, y: -0.4, z: -1 },
-      ];
-    else if (asteroidSize == "m")
-      this.boxCollider = [
-        { x: -1, y: 1, z: 0 },
-        { x: 1, y: -1, z: -1 },
-      ];
-    else
-      this.boxCollider = [
-        { x: -2, y: 2, z: 0 },
-        { x: 2, y: -2, z: -1 },
-      ];
-    this.boxCollider[0].x *= 0.56;
-    this.boxCollider[0].y *= 0.56;
-
-    this.boxCollider[1].x *= 0.56;
-    this.boxCollider[1].y *= 0.56;
-
+    this.boxCollider = [
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: -1 },
+    ];
     this.mustBeTeleported = mustBeTeleported;
     this.canvasHeight = canvasHeight;
     this.canvasWidth = canvasWidth;
     this.showBoxcollider = debugMode;
     this.loadMesh().then(() => {
       for (let i = 0; i < 8; i++) this.setLineColor(i, "#73665b");
+      // Setting best size of boxcollider for the asteroid
+      let maxX = -999999;
+      let maxY = -999999;
+      let minX = 999999;
+      let minY = 999999;
+      for (let i = 0; i < this.vertecies.length; i++) {
+        const currVert = this.vertecies[i];
+
+        if (currVert.x > maxX) {
+          maxX = currVert.x;
+        }
+        if (currVert.y > maxY) {
+          maxY = currVert.y;
+        }
+        if (currVert.x < minX) {
+          minX = currVert.x;
+        }
+        if (currVert.y < minY) {
+          minY = currVert.y;
+        }
+      }
+      maxX = (maxX - this.position.x) * 0.7;
+      minX = (minX - this.position.x) * 0.7;
+      maxY = (maxY - this.position.y) * 0.7;
+      minY = (minY - this.position.y) * 0.7;
+      this.boxCollider = [
+        { x: maxX, y: minY, z: 0 },
+        { x: minX, y: maxY, z: -1 },
+      ];
     });
   }
 
@@ -73,20 +86,20 @@ export default class Asteroid extends PhysicalGameObject {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-  
+
     const size = Math.floor(Math.random() * 15) + 1;
     const canvasOffset = 5; // Additional space to ensure the asteroid starts off-screen
-  
+
     // Determine the side from which the asteroid will enter
     const edge = ["left", "right", "top", "bottom"][Math.floor(Math.random() * 4)];
-    let position: [number, number, number] = [0, 0, 0]
-  
-    switch(edge) {
+    let position: [number, number, number] = [0, 0, 0];
+
+    switch (edge) {
       case "left":
-        position = [-11 / 2 - canvasOffset, Math.random() * .6 - 6 / 2, 0];
+        position = [-11 / 2 - canvasOffset, Math.random() * 0.6 - 6 / 2, 0];
         break;
       case "right":
-        position = [11/ 2 + canvasOffset, Math.random() * 6 - 6 / 2, 0];
+        position = [11 / 2 + canvasOffset, Math.random() * 6 - 6 / 2, 0];
         break;
       case "top":
         position = [Math.random() * 11 - 11 / 2, 6 / 2 + canvasOffset, 0];
@@ -95,7 +108,6 @@ export default class Asteroid extends PhysicalGameObject {
         position = [Math.random() * 11 - 11 / 2, -6 / 2 - canvasOffset, 0];
         break;
     }
-  
 
     // Losowanie punktu docelowego, który nie jest środkiem
     let targetPosition;
@@ -111,11 +123,6 @@ export default class Asteroid extends PhysicalGameObject {
 
     // Tworzenie asteroidy
     const ast = new Asteroid(size, type, 16, 8, mustBeTeleported, position, [0.007 + game.level / 1000, 0.007 + game.level / 1000, 0.007 + game.level / 1000]);
-
-    ast.boxCollider![0].x += 0.08;
-    ast.boxCollider![0].y += 0.08;
-    ast.boxCollider![1].x += 0.08;
-    ast.boxCollider![1].y += 0.08;
 
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const astId = game.currentScene.addGameObject(ast);
@@ -146,11 +153,6 @@ export default class Asteroid extends PhysicalGameObject {
 
     // Tworzenie asteroidy z podanym typem i pozycją
     const ast = new Asteroid(Math.floor(Math.random() * 15) + 1, asteroidType, 16, 8, true, position, [0.007 + (game.level / 1000) * 2, 0.007 + (game.level / 1000) * 2, 0.007 + (game.level / 1000) * 2]);
-
-    ast.boxCollider![0].x += 0.16;
-    ast.boxCollider![0].y += 0.16;
-    ast.boxCollider![1].x += 0.16;
-    ast.boxCollider![1].y += 0.16;
 
     ast.showBoxcollider = debugMode;
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };

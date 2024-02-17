@@ -22,7 +22,7 @@ const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 const fire = new Audio("src/asteroids/sounds/fire.wav");
 
 // show all boxcolliders
-export const debugMode: boolean = false;
+export const debugMode: boolean = true;
 
 export class MyGame extends Engine {
   //? Objects
@@ -117,12 +117,11 @@ export class MyGame extends Engine {
 
   evaluateAsteroids() {
     console.log(this.astCount);
-    
+
     const n = 4 + this.level;
     if (this.astCount < n + n * 2 + n * 2 * 2) return;
-    console.log("NEXT LEVEL")
+    console.log("NEXT LEVEL");
     for (let i = 0; i < n + 1; i++) {
-
       Asteroid.createRandomAsteroid(this, "l", true);
     }
 
@@ -173,7 +172,7 @@ export class MyGame extends Engine {
     this.spaceship.obj.velocity.z += direction.z;
   }
 
-  rotateLeft(rotationAmount: number,deltaTime: number) {
+  rotateLeft(rotationAmount: number, deltaTime: number) {
     QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, rotationAmount * deltaTime);
     this.applyRotation();
   }
@@ -233,7 +232,7 @@ export class MyGame extends Engine {
 
   handleKeyDown(e: KeyboardEvent) {
     this.keysPressed.add(e.key);
-    if(e.key == "w") {
+    if (e.key == "w") {
       thrust.play();
     }
   }
@@ -269,7 +268,7 @@ export class MyGame extends Engine {
     const mainSceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.resultText.position = { x: 250, y: 30 };
     this.bestResultText.position = { x: 600, y: 30 };
-    const bestResult = localStorage.getItem('bestResult') || '0';
+    const bestResult = localStorage.getItem("bestResult") || "0";
     this.bestResultText.text = `${bestResult}`;
     mainSceneGUI.addElement(this.resultText);
     mainSceneGUI.addElement(this.bestResultText);
@@ -371,7 +370,7 @@ export class MyGame extends Engine {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
       this.isUfoOnBoard = true;
-      console.log("chuj")
+      console.log("pojaiwenie sie ufo");
     }
 
     // GUI Scene animation
@@ -379,7 +378,7 @@ export class MyGame extends Engine {
       Shuriken.createRandomShuriken(this, false);
       this.lastShurikenSpawnTime = Date.now();
     }
-    if (currentTime - this.lastRepairSpawnTime >= 5000 && this.currentScene.id == this.GUIScene) {
+    if (currentTime - this.lastRepairSpawnTime >= 10000 && this.currentScene.id == this.GUIScene) {
       Repair.createRandomRepair(this, false);
       this.lastRepairSpawnTime = Date.now();
     }
@@ -391,7 +390,7 @@ export class MyGame extends Engine {
     }
 
     // Real feature - Repair
-    if (currentTime - this.lastRepairSpawnTime >= 40000 && this.currentScene.id == this.gameScene) {
+    if (currentTime - this.lastRepairSpawnTime >= 20000 && this.currentScene.id == this.gameScene) {
       Repair.createRandomRepair(this, true);
       this.lastRepairSpawnTime = Date.now();
     }
@@ -405,16 +404,16 @@ export class MyGame extends Engine {
   changeBestResultText(text: string) {
     this.bestResultText.text = text;
   }
-  
+
   updateBestResult(currentScore: number) {
-    const bestResult = parseInt(localStorage.getItem('bestResult') || '0');
+    const bestResult = parseInt(localStorage.getItem("bestResult") || "0");
 
     if (currentScore > bestResult) {
-        localStorage.setItem('bestResult', currentScore.toString());
+      localStorage.setItem("bestResult", currentScore.toString());
 
-        this.bestResultText.text = `Best: ${currentScore}`;
+      this.bestResultText.text = `Best: ${currentScore}`;
     }
-}
+  }
 
   // LIFES
 
@@ -462,14 +461,14 @@ export class MyGame extends Engine {
   runEnd() {
     this.currentScene!.removeGameObject(this.spaceship.obj.id);
     this.spaceShipKilled = true;
-    const result = parseInt(this.resultText.text)
+    const result = parseInt(this.resultText.text);
     setTimeout(() => {
       const currentScore = parseInt(this.resultText.text);
-      const bestResult = parseInt(localStorage.getItem('bestResult') || '0');
+      const bestResult = parseInt(localStorage.getItem("bestResult") || "0");
 
       if (currentScore > bestResult) {
-          localStorage.setItem('bestResult', currentScore.toString());
-          this.bestResultText.text = `${currentScore}`;
+        localStorage.setItem("bestResult", currentScore.toString());
+        this.bestResultText.text = `${currentScore}`;
       }
       this.resetGame();
       this.endGame(result);
@@ -477,7 +476,7 @@ export class MyGame extends Engine {
   }
 
   endGame(score: number) {
-    console.log(score)
+    console.log(score);
     if (!this.hasAlreadyScoreText) {
       this.displayEndGameMessage(score);
     } else {
