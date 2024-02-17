@@ -20,7 +20,10 @@ const thrust = new Audio("src/asteroids/sounds/thrust.wav");
 const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
 const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
 const fire = new Audio("src/asteroids/sounds/fire.wav");
-fire.volume = 0.7;
+thrust.volume = 0.7;
+beat1.volume = 0.6;
+beat2.volume = 0.6;
+fire.volume = 0.4;
 
 // show all boxcolliders
 export const debugMode: boolean = false;

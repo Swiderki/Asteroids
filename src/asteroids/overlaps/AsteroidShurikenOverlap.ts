@@ -6,15 +6,14 @@ import Asteroid from "../objects/asteroid";
 const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
 const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");
 const bangSmall = new Audio("src/asteroids/sounds/bangSmall.wav");
+bangLarge.volume = 0.6;
+bangMedium.volume = 0.6;
+bangSmall.volume = 0.6;
 
 export class AsteroidShurikenOverlap extends Overlap {
   private game: MyGame;
   private asteroid: Asteroid;
-  constructor(
-    obj1: Shuriken,
-    obj2: Asteroid,
-    game: MyGame
-  ) {
+  constructor(obj1: Shuriken, obj2: Asteroid, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
     this.asteroid = obj2;
@@ -22,10 +21,9 @@ export class AsteroidShurikenOverlap extends Overlap {
 
   override onOverlap() {
     this.game.astCount++;
-    this.game.updateLifes()
+    this.game.updateLifes();
 
-
-    let newSize = ""
+    let newSize = "";
 
     if (this.asteroid.metricalSize == "l") {
       newSize = "m";
@@ -34,9 +32,7 @@ export class AsteroidShurikenOverlap extends Overlap {
       const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a1, this.game));
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a2, this.game));
-    }
-
-    else if (this.asteroid.metricalSize == "m") {
+    } else if (this.asteroid.metricalSize == "m") {
       newSize = "s";
       bangMedium.play();
       const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
@@ -44,7 +40,7 @@ export class AsteroidShurikenOverlap extends Overlap {
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a1, this.game));
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a2, this.game));
     }
-    
+
     if (this.asteroid.metricalSize == "s") {
       bangSmall.play();
     }

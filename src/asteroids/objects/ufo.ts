@@ -8,6 +8,7 @@ import Spaceship from "./spaceship";
 import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
 
 const soucerEasy = new Audio("src/asteroids/sounds/saucerSmall.wav");
+soucerEasy.volume = 0.1;
 const soucerHard = new Audio("src/asteroids/sounds/saucerBig.wav");
 
 export default class Ufo extends PhysicalGameObject {
@@ -39,7 +40,6 @@ export default class Ufo extends PhysicalGameObject {
 
     // Tworzymy obiekt dźwięku i ustawiamy opcję loop
     this.sound = soucerEasy;
-    this.sound.volume = 0.3;
   }
 
   override updatePhysics(deltaTime: number): void {

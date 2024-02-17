@@ -6,6 +6,9 @@ import Bullet from "../objects/bullet";
 const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
 const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");
 const bangSmall = new Audio("src/asteroids/sounds/bangSmall.wav");
+bangLarge.volume = 0.6;
+bangMedium.volume = 0.6;
+bangSmall.volume = 0.6;
 
 export class BulletAsteroidOverlap extends Overlap {
   private game: MyGame;

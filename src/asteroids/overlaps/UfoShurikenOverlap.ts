@@ -4,22 +4,18 @@ import Shuriken from "../objects/shuriken";
 import { MyGame } from "../../main";
 
 const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
-
+bangLarge.volume = 0.6;
 
 export class UfoShurikenOverlap extends Overlap {
   private game: MyGame;
-  constructor(
-    obj1: Shuriken,
-    obj2: Ufo,
-    game: MyGame
-  ) {
+  constructor(obj1: Shuriken, obj2: Ufo, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
   }
 
   override onOverlap() {
     bangLarge.play();
-    this.game.updateLifes()
+    this.game.updateLifes();
 
     this.game.currentScene!.removeGameObject(this.obj2.id);
     this.game.ufos.delete(this.obj2.id);

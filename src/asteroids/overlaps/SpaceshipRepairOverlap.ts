@@ -3,6 +3,9 @@ import { MyGame } from "../../main";
 import Spaceship from "../objects/spaceship";
 import Repair from "../objects/repair";
 
+const sound = new Audio("src/asteroids/sounds/extraShip.wav");
+sound.volume = 0.7;
+
 export class SpaceshipRepairOverlap extends Overlap {
   private game: MyGame;
   private collised: boolean = false;
@@ -17,6 +20,7 @@ export class SpaceshipRepairOverlap extends Overlap {
   override onOverlap(): void {
     this.game.currentScene!.removeGameObject(this.obj2.id);
     this.collised = true;
+    sound!.play();
     this.game.lifes++;
     this.game.changeLifeIcons(this.game.lifes);
   }

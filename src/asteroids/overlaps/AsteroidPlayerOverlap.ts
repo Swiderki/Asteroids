@@ -6,6 +6,9 @@ import Asteroid from "../objects/asteroid";
 const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
 const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");
 const bangSmall = new Audio("src/asteroids/sounds/bangSmall.wav");
+bangLarge.volume = 0.6;
+bangMedium.volume = 0.6;
+bangSmall.volume = 0.6;
 
 export class AsteroidPlayerOverlap extends Overlap {
   private game: MyGame;
@@ -24,7 +27,7 @@ export class AsteroidPlayerOverlap extends Overlap {
     if (this.spaceship.isBlinking) return;
     if (!this.game.currentScene) return;
     if (this.collised) return;
-    this.game.updateLifes()
+    this.game.updateLifes();
     this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);
@@ -37,7 +40,7 @@ export class AsteroidPlayerOverlap extends Overlap {
     }
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();
-      
+
       Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
     }
@@ -47,7 +50,7 @@ export class AsteroidPlayerOverlap extends Overlap {
       Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
     }
-    
+
     if (this.asteroid.metricalSize == "s") {
       bangSmall.play();
     }
