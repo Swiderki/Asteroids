@@ -370,7 +370,7 @@ export class MyGame extends Engine {
 
     // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
-    if (currentTime - this.lastUfoSpawnTime >= 20000 - 3 * this.level && this.currentScene.id == this.gameScene) {
+    if (currentTime - this.lastUfoSpawnTime >= 20000 - 3000 * this.level && this.currentScene.id == this.gameScene) {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
       this.isUfoOnBoard = true;
