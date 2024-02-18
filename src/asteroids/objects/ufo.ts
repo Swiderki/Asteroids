@@ -79,14 +79,14 @@ export default class Ufo extends PhysicalGameObject {
     const targetY = this.game.spaceship.obj.position.y - this.position.y + randomSpreadY;
 
     bullet.velocity = {
-      x: targetX - this.position.x,
+      x: targetX - this.position.x ,
       y: targetY - this.position.y,
       z: 0,
     };
 
     bullet.velocity = {
-      x: (bullet.velocity.x / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20,
-      y: (bullet.velocity.y / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20,
+      x: (bullet.velocity.x / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20 ,
+      y: (bullet.velocity.y / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20 ,
       z: 0,
     };
 
@@ -161,7 +161,7 @@ export default class Ufo extends PhysicalGameObject {
     // Tworzenie ufo
     const ufo = new Ufo(position, size, [0, 0, 0], game.currentScene, game.spaceship.obj, game, Number(game.resultText.text));
 
-    ufo.velocity = { x: velocity[0], y: velocity[1], z: 0 };
+    ufo.velocity = { x: velocity[0] * (1 + game.level / 10), y: velocity[1] * (1 + game.level / 10), z: 0 };
     const ufoId = game.currentScene.addGameObject(ufo);
 
     game.ufos.set(ufoId, ufo);

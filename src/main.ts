@@ -55,6 +55,7 @@ export class MyGame extends Engine {
   currentBeat: typeof beat1 = beat1;
   lastBeatTime: number = Date.now();
   beatInterval: number = 500;
+  playAudio: boolean = false;
 
   //? Controls
   keysPressed: Set<string> = new Set();
@@ -335,6 +336,9 @@ export class MyGame extends Engine {
   addEventListeners(): void {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
     document.addEventListener("keyup", this.handleKeyUp.bind(this));
+    document.addEventListener('click', () => {
+      this.playAudio = true;
+    }, {once: true});
 
     this.getCanvas.addEventListener("mousemove", (e: MouseEvent) => {
       if (this.startButton && !this.startButton.isCoordInElement(e.clientX, e.clientY)) {
@@ -351,7 +355,7 @@ export class MyGame extends Engine {
   override Update(): void {
     // Sound playing
     const currentTime = Date.now();
-    if (currentTime - this.lastBeatTime >= this.beatInterval) {
+    if (currentTime - this.lastBeatTime >= this.beatInterval && this.playAudio) {
       this.currentBeat.play();
 
       this.currentBeat = this.currentBeat === beat1 ? beat2 : beat1;
