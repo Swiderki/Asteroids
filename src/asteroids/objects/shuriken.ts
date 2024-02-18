@@ -1,6 +1,5 @@
 import { PhysicalGameObject, QuaternionUtils, Vec3DTuple } from "drake-engine";
 import { MyGame, debugMode } from "../../main";
-import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
 import { SpaceshipShurikenOverlap } from "../overlaps/SpaceshipShurikenOverlap";
 import { AsteroidShurikenOverlap } from "../overlaps/AsteroidShurikenOverlap";
 import { UfoShurikenOverlap } from "../overlaps/UfoShurikenOverlap";
@@ -55,7 +54,7 @@ export default class Shuriken extends PhysicalGameObject {
       position = [Math.random() * 36 - 18, -8, 0];
     }
 
-    // Losowanie punktu docelowego, który nie jest środkiem
+    // Drawing a destination point that is not a centre
     let targetPosition;
     do {
       targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
@@ -67,7 +66,7 @@ export default class Shuriken extends PhysicalGameObject {
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.01, 0.01, 0.01];
 
-    // Tworzenie shurikenu
+    // Shuriken creation
     const shuriken = new Shuriken(position, size, [0, 0, 0]);
 
     shuriken.velocity = { x: velocity[0], y: velocity[1], z: 0 };

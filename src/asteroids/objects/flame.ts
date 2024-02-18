@@ -25,6 +25,7 @@ export default class Flame extends PhysicalGameObject {
     this.checkPosition();
   }
 
+  // The effect of infinite space
   checkPosition(): void {
     let deltaX = 0;
     let deltaY = 0;

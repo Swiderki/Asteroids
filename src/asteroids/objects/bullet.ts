@@ -1,4 +1,3 @@
-import { GameObject } from "drake-engine";
 import { PhysicalGameObject } from "drake-engine";
 import { QuaternionUtils } from "drake-engine";
 import { Scene } from "drake-engine";
@@ -29,6 +28,7 @@ export default class Bullet extends PhysicalGameObject {
     ];
     this.showBoxcollider = debugMode;
   }
+
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
     const forwardVector = { x: 0, y: 1, z: 0 };
@@ -46,6 +46,8 @@ export default class Bullet extends PhysicalGameObject {
     }
     this.checkPosition();
   }
+
+  // The effect of infinite space
   checkPosition(): void {
     let deltaX = 0;
     let deltaY = 0;

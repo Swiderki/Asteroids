@@ -3,12 +3,13 @@ import { MyGame } from "../../main";
 import Ufo from "../objects/ufo";
 import Bullet from "../objects/bullet";
 
+const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
+bangLarge.volume = 0.6;
+
 export class BulletUfoOverlap extends Overlap {
   private game: MyGame;
-  private bullet: Bullet;
   private bulletID: number;
   private ufoID: number;
-  private ufo: Ufo;
   constructor(
     obj1: Bullet,
     obj2: Ufo,
@@ -18,15 +19,15 @@ export class BulletUfoOverlap extends Overlap {
   ) {
     super(obj1, obj2);
     this.game = game;
-    this.bullet = obj1;
-    this.ufo = obj2;
     this.bulletID = bulletID;
     this.ufoID = ufoID;
   }
 
+  // Ufo is being killed here
   override onOverlap() {
     this.game.updateLifes()
 
+    bangLarge.play();
     this.game.isUfoOnBoard = false;
     this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 200));
     this.game.currentScene!.removeGameObject(this.bulletID);

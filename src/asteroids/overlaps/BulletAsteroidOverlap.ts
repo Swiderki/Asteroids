@@ -12,19 +12,18 @@ bangSmall.volume = 0.6;
 
 export class BulletAsteroidOverlap extends Overlap {
   private game: MyGame;
-  private bullet: Bullet;
   private bulletID: number;
   private astID: number;
   private asteroid: Asteroid;
   constructor(obj1: Bullet, obj2: Asteroid, bulletID: number, astID: number, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
-    this.bullet = obj1;
     this.asteroid = obj2;
     this.bulletID = bulletID;
     this.astID = astID;
   }
 
+  // The effect of smashing an asteroid into smaller ones
   override onOverlap() {
     this.game.updateLifes();
 
@@ -53,6 +52,7 @@ export class BulletAsteroidOverlap extends Overlap {
     this.game.asteroids.delete(this.astID);
 
     this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
+    // Used to check the need to move to the next level
     this.game.astOnBoard -= 1;
     this.game.astCount++;
     this.game.evaluateAsteroids();

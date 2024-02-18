@@ -19,21 +19,18 @@ export class AsteroidShurikenOverlap extends Overlap {
     this.asteroid = obj2;
   }
 
+  // The effect of smashing an asteroid into smaller ones
   override onOverlap() {
     this.game.astCount++;
     this.game.updateLifes();
 
-    let newSize = "";
-
     if (this.asteroid.metricalSize == "l") {
-      newSize = "m";
       bangLarge.play();
       const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a1, this.game));
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a2, this.game));
     } else if (this.asteroid.metricalSize == "m") {
-      newSize = "s";
       bangMedium.play();
       const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
       const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
@@ -49,6 +46,7 @@ export class AsteroidShurikenOverlap extends Overlap {
     this.game.asteroids.delete(this.obj2.id);
 
     this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
+    // Used to check the need to move to the next level
     this.game.astOnBoard -= 1;
     this.game.evaluateAsteroids();
   }

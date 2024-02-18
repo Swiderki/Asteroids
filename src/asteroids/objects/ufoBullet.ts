@@ -1,4 +1,3 @@
-import { GameObject } from "drake-engine";
 import { PhysicalGameObject } from "drake-engine";
 import { QuaternionUtils } from "drake-engine";
 import { Scene } from "drake-engine";
@@ -33,6 +32,7 @@ export default class Bullet extends PhysicalGameObject {
     this.checkPosition();
   }
 
+  // Infitnity space effect
   checkPosition(): void {
     let deltaX = 0;
     let deltaY = 0;

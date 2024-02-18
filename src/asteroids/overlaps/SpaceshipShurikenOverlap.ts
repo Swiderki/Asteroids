@@ -5,7 +5,6 @@ import Shuriken from "../objects/shuriken";
 
 export class SpaceshipShurikenOverlap extends Overlap {
   private game: MyGame;
-  private collised: boolean = false;
   private spaceship: Spaceship;
 
   constructor(obj1: Spaceship, obj2: Shuriken, game: MyGame) {
@@ -20,7 +19,6 @@ export class SpaceshipShurikenOverlap extends Overlap {
 
     if (this.spaceship.isBlinking) return;
 
-    this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);
 

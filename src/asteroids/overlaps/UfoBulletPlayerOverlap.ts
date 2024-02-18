@@ -1,11 +1,10 @@
-import { Overlap, PhysicalGameObject } from "drake-engine";
+import { Overlap } from "drake-engine";
 import { MyGame } from "../../main";
 import Spaceship from "../objects/spaceship";
 import UfoBullet from "../objects/ufoBullet";
 
 export class UfoBulletPlayerOverlap extends Overlap {
   private game: MyGame;
-  private collised: boolean = false;
   private spaceship: Spaceship;
 
   constructor(obj1: Spaceship, obj2: UfoBullet, game: MyGame) {
@@ -22,7 +21,6 @@ export class UfoBulletPlayerOverlap extends Overlap {
 
     this.game.currentScene!.removeGameObject(this.obj2.id);
 
-    this.collised = true;
     this.game.lifes--;
     this.game.changeLifeIcons(this.game.lifes);
 

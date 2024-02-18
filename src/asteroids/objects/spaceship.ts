@@ -22,7 +22,7 @@ export default class Spaceship extends PhysicalGameObject {
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
 
-    // Zastosowanie tłumienia
+    // Application of damping
     const velocityRatio = 0.9983;
     const accelerationRatio = 0.995;
 
@@ -34,13 +34,14 @@ export default class Spaceship extends PhysicalGameObject {
     this.velocity.y *= velocityRatio;
     this.velocity.z *= velocityRatio;
 
-    // Ograniczenie maksymalnej prędkości
+    // Maximum speed limit
     this.limitVelocity();
 
-    // Sprawdzenie i ewentualna korekta pozycji statku
+    // Checking and possible correction of the spaceship's position
     this.checkPosition();
   }
 
+  // Responsible for the flashing effect when lives are lost
   runBlinking() {
     this.isBlinking = true;
 
@@ -76,6 +77,7 @@ export default class Spaceship extends PhysicalGameObject {
     }
   }
 
+  // Infinity space effect
   checkPosition(): void {
     let deltaX = 0;
     let deltaY = 0;

@@ -59,6 +59,7 @@ export default class Asteroid extends PhysicalGameObject {
     this.checkPosition();
   }
 
+  // The effect of infinite space
   checkPosition(): void {
     if (!this.mustBeTeleported) return;
 
@@ -109,19 +110,19 @@ export default class Asteroid extends PhysicalGameObject {
         break;
     }
 
-    // Losowanie punktu docelowego, który nie jest środkiem
+    // Drawing a destination point that is not a centre
     let targetPosition;
     do {
       targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
     } while (targetPosition[0] === 0 && targetPosition[1] === 0);
 
-    // Losowanie i obliczanie wektora prędkości
+    // Drawing and calculation of the velocity vector
     const velocityMagnitude = Math.random() * 3 + 1.5;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1]];
     const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
 
-    // Tworzenie asteroidy
+    // Asteroid formation
     const ast = new Asteroid(size, type, 16, 8, mustBeTeleported, position, [0.007 + game.level / 1000, 0.007 + game.level / 1000, 0.007 + game.level / 1000]);
 
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
@@ -139,19 +140,19 @@ export default class Asteroid extends PhysicalGameObject {
       throw new Error("Main scene must be set first.");
     }
 
-    // Losowanie punktu docelowego, który nie jest środkiem, aby uniknąć przypadku, gdy asteroida nie poruszałaby się
+    // Drawing a destination point that is not the centre, to avoid the case where the asteroid would not move
     let targetPosition;
     do {
       targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5, 0];
     } while (targetPosition[0] === position[0] && targetPosition[1] === position[1]);
 
-    // Losowanie i obliczanie wektora prędkości
+    // Drawing and calculation of the velocity vector
     const velocityMagnitude = Math.random() * 4 + 2;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1], 0];
     const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
 
-    // Tworzenie asteroidy z podanym typem i pozycją
+    // Creation of an asteroid with the given type and position
     const ast = new Asteroid(Math.floor(Math.random() * 15) + 1, asteroidType, 16, 8, true, position, [0.007 + (game.level / 1000) * 2, 0.007 + (game.level / 1000) * 2, 0.007 + (game.level / 1000) * 2]);
 
     ast.showBoxcollider = debugMode;

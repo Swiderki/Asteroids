@@ -54,6 +54,8 @@ export class AsteroidPlayerOverlap extends Overlap {
     if (this.asteroid.metricalSize == "s") {
       bangSmall.play();
     }
+
+    // End of game mechanism
     if (this.game.lifes <= 0) {
       this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 5);
       this.game.runEnd();
@@ -61,6 +63,7 @@ export class AsteroidPlayerOverlap extends Overlap {
     this.game.currentScene!.removeGameObject(this.asteroid.id);
     this.game.asteroids.delete(this.asteroid.id);
 
+    // Cool particles effect
     this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
     this.game.astOnBoard -= 1;
     this.game.astCount++;

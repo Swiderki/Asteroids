@@ -9,7 +9,6 @@ import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
 
 const soucerEasy = new Audio("src/asteroids/sounds/saucerSmall.wav");
 soucerEasy.volume = 0.1;
-const soucerHard = new Audio("src/asteroids/sounds/saucerBig.wav");
 
 export default class Ufo extends PhysicalGameObject {
   private sound: HTMLAudioElement | null = null;

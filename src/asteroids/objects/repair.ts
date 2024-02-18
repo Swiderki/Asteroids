@@ -1,4 +1,4 @@
-import { PhysicalGameObject, QuaternionUtils, Vec3DTuple } from "drake-engine";
+import { PhysicalGameObject, Vec3DTuple } from "drake-engine";
 import { MyGame, debugMode } from "../../main";
 import { SpaceshipRepairOverlap } from "../overlaps/SpaceshipRepairOverlap";
 
@@ -35,7 +35,7 @@ export default class Repair extends PhysicalGameObject {
       position = [Math.random() * 36 - 18, -8, 0];
     }
 
-    // Losowanie punktu docelowego, który nie jest środkiem
+    // Drawing a destination point that is not a centre
     let targetPosition;
     do {
       targetPosition = [Math.random() * 26 - 13, Math.random() * 10 - 5];
@@ -47,7 +47,7 @@ export default class Repair extends PhysicalGameObject {
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.02, 0.02, 0.02];
 
-    // Tworzenie nowej naprawy
+    // Creation of a new repair
     const repair = new Repair(position, size, [0, 0, 0]);
 
     repair.velocity = { x: velocity[0], y: velocity[1], z: 0 };
