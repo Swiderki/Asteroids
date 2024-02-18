@@ -48,6 +48,7 @@ export class AsteroidShurikenOverlap extends Overlap {
     this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
     // Used to check the need to move to the next level
     this.game.astOnBoard -= 1;
+    this.game.astCount++;
     this.game.evaluateAsteroids();
   }
 }
