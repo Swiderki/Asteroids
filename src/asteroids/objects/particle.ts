@@ -5,7 +5,7 @@ export class Particle extends PhysicalGameObject {
   game: MyGame;
   constructor(position: Vec3DTuple, game: MyGame, size?: Vec3DTuple) {
     // super call
-    super(`src/asteroids/objects/obj/bullet.obj`, {
+    super(`obj/bullet.obj`, {
       position,
       size,
       rotation: [0, 0, 0],

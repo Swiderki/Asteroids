@@ -7,7 +7,7 @@ import { MyGame, debugMode } from "../../main";
 import Spaceship from "./spaceship";
 import { UfoPlayerOverlap } from "../overlaps/UfoPlayerOverlap";
 
-const soucerEasy = new Audio("src/asteroids/sounds/saucerSmall.wav");
+const soucerEasy = new Audio("sounds/saucerSmall.wav");
 soucerEasy.volume = 0.1;
 
 export default class Ufo extends PhysicalGameObject {
@@ -22,7 +22,7 @@ export default class Ufo extends PhysicalGameObject {
   points: number;
 
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, currentScene?: Scene, spaceship?: Spaceship, game?: MyGame, points?: number) {
-    super(`src/asteroids/objects/obj/ufo.obj`, { position, size, rotation });
+    super(`obj/ufo.obj`, { position, size, rotation });
     this.currentScene = currentScene!;
     this.spaceship = spaceship!;
     this.game = game!;

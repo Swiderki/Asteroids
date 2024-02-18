@@ -5,7 +5,7 @@ export default class Flame extends PhysicalGameObject {
   canvasWidth: number = 11;
   canvasHeight: number = 6;
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
-    super(`src/asteroids/objects/obj/flame.obj`, { position, size, rotation });
+    super(`obj/flame.obj`, { position, size, rotation });
     this.loadMesh().then(() => {
       for (let i = 0; i < 2; i++) this.setLineColor(i, "#f2661b");
     });

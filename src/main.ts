@@ -16,10 +16,10 @@ import Repair from "./asteroids/objects/repair";
 const canvas = document.getElementById("app") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 
-const thrust = new Audio("src/asteroids/sounds/thrust.wav");
-const beat1 = new Audio("src/asteroids/sounds/beat1.wav");
-const beat2 = new Audio("src/asteroids/sounds/beat2.wav");
-const fire = new Audio("src/asteroids/sounds/fire.wav");
+const thrust = new Audio("sounds/thrust.wav");
+const beat1 = new Audio("sounds/beat1.wav");
+const beat2 = new Audio("sounds/beat2.wav");
+const fire = new Audio("sounds/fire.wav");
 thrust.volume = 0.7;
 beat1.volume = 0.6;
 beat2.volume = 0.6;

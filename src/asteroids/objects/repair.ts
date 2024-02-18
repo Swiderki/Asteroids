@@ -4,7 +4,7 @@ import { SpaceshipRepairOverlap } from "../overlaps/SpaceshipRepairOverlap";
 
 export default class Repair extends PhysicalGameObject {
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
-    super(`src/asteroids/objects/obj/repair.obj`, { position, size, rotation });
+    super(`obj/repair.obj`, { position, size, rotation });
     this.boxCollider = [
       { x: -0.4, y: -0.4, z: 0 },
       { x: 0.4, y: 0.4, z: -1 },

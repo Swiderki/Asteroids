@@ -3,7 +3,7 @@ import Ufo from "../objects/ufo";
 import Shuriken from "../objects/shuriken";
 import { MyGame } from "../../main";
 
-const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
+const bangLarge = new Audio("sounds/bangLarge.wav");
 bangLarge.volume = 0.6;
 
 export class UfoShurikenOverlap extends Overlap {

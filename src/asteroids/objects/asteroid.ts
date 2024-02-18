@@ -9,7 +9,7 @@ export default class Asteroid extends PhysicalGameObject {
   canvasHeight: number;
   mustBeTeleported: boolean;
   constructor(asteroidNumber: number, asteroidSize: "l" | "m" | "s", canvasWidth: number, canvasHeight: number, mustBeTeleported: boolean, position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
-    super(`src/asteroids/objects/obj/asteroid-${asteroidSize}-${asteroidNumber}.obj`, { position, size, rotation });
+    super(`obj/asteroid-${asteroidSize}-${asteroidNumber}.obj`, { position, size, rotation });
 
     this.metricalSize = asteroidSize;
     this.boxCollider = [

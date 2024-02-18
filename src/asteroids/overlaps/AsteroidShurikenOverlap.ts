@@ -3,9 +3,9 @@ import { MyGame } from "../../main";
 import Shuriken from "../objects/shuriken";
 import Asteroid from "../objects/asteroid";
 
-const bangLarge = new Audio("src/asteroids/sounds/bangLarge.wav");
-const bangMedium = new Audio("src/asteroids/sounds/bangMedium.wav");
-const bangSmall = new Audio("src/asteroids/sounds/bangSmall.wav");
+const bangLarge = new Audio("sounds/bangLarge.wav");
+const bangMedium = new Audio("sounds/bangMedium.wav");
+const bangSmall = new Audio("sounds/bangSmall.wav");
 bangLarge.volume = 0.6;
 bangMedium.volume = 0.6;
 bangSmall.volume = 0.6;

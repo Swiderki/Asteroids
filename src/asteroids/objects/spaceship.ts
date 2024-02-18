@@ -10,7 +10,7 @@ export default class Spaceship extends PhysicalGameObject {
   normalColor: boolean = true;
 
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
-    super(`src/asteroids/objects/obj/spaceship.obj`, { position, size, rotation });
+    super(`obj/spaceship.obj`, { position, size, rotation });
     this.loadMesh();
     this.showBoxcollider = debugMode;
     this.boxCollider = [

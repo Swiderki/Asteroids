@@ -3,7 +3,7 @@ import { MyGame } from "../../main";
 import Spaceship from "../objects/spaceship";
 import Repair from "../objects/repair";
 
-const sound = new Audio("src/asteroids/sounds/extraShip.wav");
+const sound = new Audio("sounds/extraShip.wav");
 sound.volume = 0.7;
 
 export class SpaceshipRepairOverlap extends Overlap {

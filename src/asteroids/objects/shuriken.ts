@@ -15,7 +15,7 @@ export default class Shuriken extends PhysicalGameObject {
   normalRotation = { x: 0, y: 0, z: 0, w: 1 };
 
   constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
-    super(`src/asteroids/objects/obj/shuriken.obj`, { position, size, rotation });
+    super(`obj/shuriken.obj`, { position, size, rotation });
     this.loadMesh().then(() => {
       for (let i = 0; i < 8; i++) this.setLineColor(i, "#999999");
     });
