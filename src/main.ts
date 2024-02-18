@@ -124,7 +124,7 @@ export class MyGame extends Engine {
     console.log(this.astCount);
 
     const n = 4 + this.level;
-    if (this.astCount < n + n * 2 + n * 2 * 2) return;
+    if (this.astCount <= n + n * 2 + n * 2 * 2) return;
     console.log("NEXT LEVEL");
     for (let i = 0; i < n + 1; i++) {
       Asteroid.createRandomAsteroid(this, "l", true);
