@@ -16,6 +16,7 @@ export class Particle extends PhysicalGameObject {
       y: (Math.random() - 0.5) * 4,
       z: 0,
     };
+    this.isShining = true;
     // game ref
     this.game = game;
   }

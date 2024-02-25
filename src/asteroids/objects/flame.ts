@@ -9,6 +9,7 @@ export default class Flame extends PhysicalGameObject {
     this.loadMesh().then(() => {
       for (let i = 0; i < 2; i++) this.setLineColor(i, "#f2661b");
     });
+    this.isShining = true;
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);

@@ -121,12 +121,9 @@ export class MyGame extends Engine {
   }
 
   evaluateAsteroids() {
-    console.log(this.astCount);
 
     const n = 4 + this.level;
-    if (this.astCount <= n + n * 2 + n * 2 * 2) return;
-    // HERE IS BUG
-    console.log("NEXT LEVEL");
+    if (this.astCount < n + n * 2 + n * 2 * 2) return;
     for (let i = 0; i < n + 1; i++) {
       Asteroid.createRandomAsteroid(this, "l", true);
     }
@@ -262,8 +259,8 @@ export class MyGame extends Engine {
     this.addEventListeners();
 
     this.setCurrentScene(this.GUIScene!);
-    this.currentScene.started = true;
-    mainScene.started = true;
+    this.currentScene._started = true;
+    mainScene._started = true;
   }
 
   initializeMainScene(camera: Camera): Scene {
@@ -354,6 +351,7 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
+
     // Sound playing
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval && this.playAudio) {
@@ -485,7 +483,6 @@ export class MyGame extends Engine {
   }
 
   endGame(score: number) {
-    console.log(score);
     if (!this.hasAlreadyScoreText) {
       this.displayEndGameMessage(score);
     } else {

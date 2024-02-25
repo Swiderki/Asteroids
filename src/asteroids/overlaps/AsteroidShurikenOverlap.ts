@@ -13,6 +13,7 @@ bangSmall.volume = 0.6;
 export class AsteroidShurikenOverlap extends Overlap {
   private game: MyGame;
   private asteroid: Asteroid;
+  private happened: boolean = false;
   constructor(obj1: Shuriken, obj2: Asteroid, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
@@ -21,7 +22,8 @@ export class AsteroidShurikenOverlap extends Overlap {
 
   // The effect of smashing an asteroid into smaller ones
   override onOverlap() {
-    this.game.astCount++;
+    if (this.happened) return;
+    this.happened = true;
     this.game.updateLifes();
 
     if (this.asteroid.metricalSize == "l") {
