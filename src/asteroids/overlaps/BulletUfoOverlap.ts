@@ -10,13 +10,7 @@ export class BulletUfoOverlap extends Overlap {
   private game: MyGame;
   private bulletID: number;
   private ufoID: number;
-  constructor(
-    obj1: Bullet,
-    obj2: Ufo,
-    bulletID: number,
-    ufoID: number,
-    game: MyGame
-  ) {
+  constructor(obj1: Bullet, obj2: Ufo, bulletID: number, ufoID: number, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
     this.bulletID = bulletID;
@@ -25,7 +19,7 @@ export class BulletUfoOverlap extends Overlap {
 
   // Ufo is being killed here
   override onOverlap() {
-    this.game.updateLifes()
+    this.game.updateLifes();
 
     bangLarge.play();
     this.game.isUfoOnBoard = false;

@@ -10,7 +10,13 @@ export default class Bullet extends PhysicalGameObject {
   canvasWidth: number = 11;
   canvasHeight: number = 6;
   mainScene: Scene;
-  constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, rotationQuaternion?: QuaternionUtils.Quaternion, mainScene?: Scene) {
+  constructor(
+    position?: Vec3DTuple,
+    size?: Vec3DTuple,
+    rotation?: Vec3DTuple,
+    rotationQuaternion?: QuaternionUtils.Quaternion,
+    mainScene?: Scene
+  ) {
     super(`obj/bullet.obj`, { position, size, rotation });
     this.rotationQuaternion.w = rotationQuaternion!.w;
     this.rotationQuaternion.x = rotationQuaternion!.x;

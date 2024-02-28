@@ -8,14 +8,13 @@ export class SpaceshipShurikenOverlap extends Overlap {
   private spaceship: Spaceship;
 
   constructor(obj1: Spaceship, obj2: Shuriken, game: MyGame) {
-
     super(obj1, obj2);
     this.game = game;
     this.spaceship = obj1;
   }
 
   override onOverlap(): void {
-    this.game.updateLifes()
+    this.game.updateLifes();
 
     if (this.spaceship.isBlinking) return;
 
@@ -23,12 +22,16 @@ export class SpaceshipShurikenOverlap extends Overlap {
     this.game.changeLifeIcons(this.game.lifes);
 
     if (this.game.lifes <= 0) {
-      this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 8);
+      this.game.spawnParticles(
+        [this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z],
+        8
+      );
       this.game.runEnd();
       return;
-    }
-
-    else this.game.spaceship.obj.runBlinking();
-    this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 3);
+    } else this.game.spaceship.obj.runBlinking();
+    this.game.spawnParticles(
+      [this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z],
+      3
+    );
   }
 }

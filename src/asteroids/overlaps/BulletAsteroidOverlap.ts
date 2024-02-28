@@ -30,15 +30,31 @@ export class BulletAsteroidOverlap extends Overlap {
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();
 
-      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
-      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "m", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 20));
     }
 
     if (this.asteroid.metricalSize == "m") {
       bangMedium.play();
-      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
-      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
+      Asteroid.createRandomAsteroidAtPosition(this.game, "s", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
       this.game.changeResultText("" + (parseInt(this.game.resultText.text) + 50));
     }
 
@@ -51,7 +67,10 @@ export class BulletAsteroidOverlap extends Overlap {
     this.game.currentScene!.removeGameObject(this.astID);
     this.game.asteroids.delete(this.astID);
 
-    this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
+    this.game.spawnParticles(
+      [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z],
+      8
+    );
     // Used to check the need to move to the next level
     this.game.astOnBoard -= 1;
     this.game.astCount++;

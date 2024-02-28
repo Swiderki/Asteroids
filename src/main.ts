@@ -106,7 +106,11 @@ export class MyGame extends Engine {
     // Initialize GUI elements
     this.resultText = new GUIText("00", 35, "Arial", "white", 100);
     this.bestResultText = new GUIText("00", 35, "Arial", "white", 100);
-    this.icons = [new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245, y: 60 }, "white"), new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 265, y: 60 }, "white"), new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 285, y: 60 }, "white")];
+    this.icons = [
+      new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245, y: 60 }, "white"),
+      new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 265, y: 60 }, "white"),
+      new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 285, y: 60 }, "white"),
+    ];
   }
 
   changeScene() {
@@ -121,7 +125,6 @@ export class MyGame extends Engine {
   }
 
   evaluateAsteroids() {
-
     const n = 4 + this.level;
     if (this.astCount < n + n * 2 + n * 2 * 2) return;
     for (let i = 0; i < n + 1; i++) {
@@ -155,7 +158,11 @@ export class MyGame extends Engine {
   }
 
   moveForward(deltaTime: number) {
-    this.flame.obj.setPosition(this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z);
+    this.flame.obj.setPosition(
+      this.spaceship.obj.position.x,
+      this.spaceship.obj.position.y,
+      this.spaceship.obj.position.z
+    );
     const forwardVector = { x: 0, y: 1, z: 0 };
     let direction = { x: 0, y: 0, z: 0 };
 
@@ -176,12 +183,20 @@ export class MyGame extends Engine {
   }
 
   rotateLeft(rotationAmount: number, deltaTime: number) {
-    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, rotationAmount * deltaTime);
+    QuaternionUtils.setFromAxisAngle(
+      this.rotationQuaternion,
+      { x: 0, y: 0, z: 1 },
+      rotationAmount * deltaTime
+    );
     this.applyRotation();
   }
 
   rotateRight(rotationAmount: number, deltaTime: number) {
-    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: -1 }, rotationAmount * deltaTime);
+    QuaternionUtils.setFromAxisAngle(
+      this.rotationQuaternion,
+      { x: 0, y: 0, z: -1 },
+      rotationAmount * deltaTime
+    );
     this.applyRotation();
   }
 
@@ -212,7 +227,13 @@ export class MyGame extends Engine {
   shoot() {
     this.isShooting = true;
     fire.play();
-    const bullet = new Bullet([this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z], [0.5, 0.5, 0.5], [0, 0, 0], this.spaceship.rotation, this.scenes.get(this.gameScene!)!);
+    const bullet = new Bullet(
+      [this.spaceship.obj.position.x, this.spaceship.obj.position.y, this.spaceship.obj.position.z],
+      [0.5, 0.5, 0.5],
+      [0, 0, 0],
+      this.spaceship.rotation,
+      this.scenes.get(this.gameScene!)!
+    );
 
     // bullet.showBoxcollider = true;
     const bulletID = this.currentScene.addGameObject(bullet);
@@ -334,9 +355,13 @@ export class MyGame extends Engine {
   addEventListeners(): void {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
     document.addEventListener("keyup", this.handleKeyUp.bind(this));
-    document.addEventListener('click', () => {
-      this.playAudio = true;
-    }, {once: true});
+    document.addEventListener(
+      "click",
+      () => {
+        this.playAudio = true;
+      },
+      { once: true }
+    );
 
     this.getCanvas.addEventListener("mousemove", (e: MouseEvent) => {
       if (this.startButton && !this.startButton.isCoordInElement(e.clientX, e.clientY)) {
@@ -351,7 +376,6 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
-
     // Sound playing
     const currentTime = Date.now();
     if (currentTime - this.lastBeatTime >= this.beatInterval && this.playAudio) {
@@ -366,14 +390,21 @@ export class MyGame extends Engine {
 
     // Scene animation
     if (this.currentScene.id == this.GUIScene && currentTime - this.lastAsteroidSpawnTime >= 1000) {
-      Asteroid.createRandomAsteroid(this, ["l", "m", "s"][Math.floor(Math.random() * 3)] as "l" | "m" | "s", false);
+      Asteroid.createRandomAsteroid(
+        this,
+        ["l", "m", "s"][Math.floor(Math.random() * 3)] as "l" | "m" | "s",
+        false
+      );
 
       this.lastAsteroidSpawnTime = currentTime;
     }
 
     // Next ufo spawns after (20 - 3*this.level) seconds
     if (this.isUfoOnBoard) this.lastUfoSpawnTime = currentTime;
-    if (currentTime - this.lastUfoSpawnTime >= 20000 - 3000 * this.level && this.currentScene.id == this.gameScene) {
+    if (
+      currentTime - this.lastUfoSpawnTime >= 20000 - 3000 * this.level &&
+      this.currentScene.id == this.gameScene
+    ) {
       this.lastUfoSpawnTime = currentTime;
       Ufo.createRandomUfo(this);
       this.isUfoOnBoard = true;
@@ -442,7 +473,13 @@ export class MyGame extends Engine {
   }
 
   addLifeIcon(index: number) {
-    const icon = new Icon("m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z", 770, 770, { x: 245 + index * 20, y: 60 }, "white");
+    const icon = new Icon(
+      "m 10 0 l 10 40 l -3 -5 l -14 0 l -3 5 z",
+      770,
+      770,
+      { x: 245 + index * 20, y: 60 },
+      "white"
+    );
     this.icons.push(icon);
     const iconId = this.currentScene.currentGUI!.addElement(icon);
     this.iconsID.push(iconId);
@@ -494,7 +531,9 @@ export class MyGame extends Engine {
   }
 
   resetGame() {
-    this.scenes.get(this.gameScene!)!.gameObjects.forEach((obj) => this.currentScene!.removeGameObject(obj.id));
+    this.scenes
+      .get(this.gameScene!)!
+      .gameObjects.forEach((obj) => this.currentScene!.removeGameObject(obj.id));
 
     this.resultText.text = "0";
     this.lifes = 3;

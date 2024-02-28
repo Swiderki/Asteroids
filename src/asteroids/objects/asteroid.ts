@@ -8,7 +8,16 @@ export default class Asteroid extends PhysicalGameObject {
   canvasWidth: number;
   canvasHeight: number;
   mustBeTeleported: boolean;
-  constructor(asteroidNumber: number, asteroidSize: "l" | "m" | "s", canvasWidth: number, canvasHeight: number, mustBeTeleported: boolean, position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple) {
+  constructor(
+    asteroidNumber: number,
+    asteroidSize: "l" | "m" | "s",
+    canvasWidth: number,
+    canvasHeight: number,
+    mustBeTeleported: boolean,
+    position?: Vec3DTuple,
+    size?: Vec3DTuple,
+    rotation?: Vec3DTuple
+  ) {
     super(`obj/asteroid-${asteroidSize}-${asteroidNumber}.obj`, { position, size, rotation });
 
     this.metricalSize = asteroidSize;
@@ -119,11 +128,17 @@ export default class Asteroid extends PhysicalGameObject {
     // Drawing and calculation of the velocity vector
     const velocityMagnitude = Math.random() * 3 + 1.5;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1]];
-    const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
+    const normalizedVelocity = velocityDirection.map(
+      (v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
 
     // Asteroid formation
-    const ast = new Asteroid(size, type, 16, 8, mustBeTeleported, position, [0.007 + game.level / 1000, 0.007 + game.level / 1000, 0.007 + game.level / 1000]);
+    const ast = new Asteroid(size, type, 16, 8, mustBeTeleported, position, [
+      0.007 + game.level / 1000,
+      0.007 + game.level / 1000,
+      0.007 + game.level / 1000,
+    ]);
 
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };
     const astId = game.currentScene.addGameObject(ast);
@@ -135,7 +150,11 @@ export default class Asteroid extends PhysicalGameObject {
     }
   }
 
-  static createRandomAsteroidAtPosition(game: MyGame, asteroidType: "l" | "m" | "s", position: [number, number, number]): Asteroid {
+  static createRandomAsteroidAtPosition(
+    game: MyGame,
+    asteroidType: "l" | "m" | "s",
+    position: [number, number, number]
+  ): Asteroid {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
@@ -149,11 +168,17 @@ export default class Asteroid extends PhysicalGameObject {
     // Drawing and calculation of the velocity vector
     const velocityMagnitude = Math.random() * 4 + 2;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1], 0];
-    const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
+    const normalizedVelocity = velocityDirection.map(
+      (v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
 
     // Creation of an asteroid with the given type and position
-    const ast = new Asteroid(Math.floor(Math.random() * 15) + 1, asteroidType, 16, 8, true, position, [0.007 + (game.level / 1000) * 2, 0.007 + (game.level / 1000) * 2, 0.007 + (game.level / 1000) * 2]);
+    const ast = new Asteroid(Math.floor(Math.random() * 15) + 1, asteroidType, 16, 8, true, position, [
+      0.007 + (game.level / 1000) * 2,
+      0.007 + (game.level / 1000) * 2,
+      0.007 + (game.level / 1000) * 2,
+    ]);
 
     ast.showBoxcollider = debugMode;
     ast.velocity = { x: velocity[0], y: velocity[1], z: 0 };

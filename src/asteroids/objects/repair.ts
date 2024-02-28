@@ -10,7 +10,6 @@ export default class Repair extends PhysicalGameObject {
       { x: 0.4, y: 0.4, z: -1 },
     ];
     this.showBoxcollider = debugMode;
-
   }
 
   override updatePhysics(deltaTime: number): void {
@@ -43,7 +42,9 @@ export default class Repair extends PhysicalGameObject {
 
     const velocityMagnitude = 2;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1]];
-    const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
+    const normalizedVelocity = velocityDirection.map(
+      (v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.02, 0.02, 0.02];
 

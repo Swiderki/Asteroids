@@ -68,7 +68,9 @@ export default class Spaceship extends PhysicalGameObject {
   }
 
   limitVelocity(): void {
-    const currentVelocityMagnitude = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2 + this.velocity.z ** 2);
+    const currentVelocityMagnitude = Math.sqrt(
+      this.velocity.x ** 2 + this.velocity.y ** 2 + this.velocity.z ** 2
+    );
     if (currentVelocityMagnitude > this.maxVelocity) {
       const reductionFactor = this.maxVelocity / currentVelocityMagnitude;
       this.velocity.x *= reductionFactor;

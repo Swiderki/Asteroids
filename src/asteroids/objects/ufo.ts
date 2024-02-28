@@ -21,7 +21,15 @@ export default class Ufo extends PhysicalGameObject {
   game: MyGame;
   points: number;
 
-  constructor(position?: Vec3DTuple, size?: Vec3DTuple, rotation?: Vec3DTuple, currentScene?: Scene, spaceship?: Spaceship, game?: MyGame, points?: number) {
+  constructor(
+    position?: Vec3DTuple,
+    size?: Vec3DTuple,
+    rotation?: Vec3DTuple,
+    currentScene?: Scene,
+    spaceship?: Spaceship,
+    game?: MyGame,
+    points?: number
+  ) {
     super(`obj/ufo.obj`, { position, size, rotation });
     this.currentScene = currentScene!;
     this.spaceship = spaceship!;
@@ -64,7 +72,13 @@ export default class Ufo extends PhysicalGameObject {
     quaternion.z = z;
     quaternion.w = w;
 
-    const bullet = new UfoBullet([this.position.x, this.position.y, this.position.z], [0.5, 0.5, 0.5], [0, 0, 0], quaternion, this.currentScene);
+    const bullet = new UfoBullet(
+      [this.position.x, this.position.y, this.position.z],
+      [0.5, 0.5, 0.5],
+      [0, 0, 0],
+      quaternion,
+      this.currentScene
+    );
     bullet.boxCollider = [
       { x: -0.1, y: -0.1, z: 0 },
       { x: 0.1, y: 0.1, z: -1 },
@@ -79,14 +93,14 @@ export default class Ufo extends PhysicalGameObject {
     const targetY = this.game.spaceship.obj.position.y - this.position.y + randomSpreadY;
 
     bullet.velocity = {
-      x: targetX - this.position.x ,
+      x: targetX - this.position.x,
       y: targetY - this.position.y,
       z: 0,
     };
 
     bullet.velocity = {
-      x: (bullet.velocity.x / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20 ,
-      y: (bullet.velocity.y / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20 ,
+      x: (bullet.velocity.x / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20,
+      y: (bullet.velocity.y / Math.sqrt(bullet.velocity.x ** 2 + bullet.velocity.y ** 2)) * 20,
       z: 0,
     };
 
@@ -154,12 +168,22 @@ export default class Ufo extends PhysicalGameObject {
     // Increase in speed by (this.level) (base value is 4)
     const velocityMagnitude = 4 + game.level;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1]];
-    const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
+    const normalizedVelocity = velocityDirection.map(
+      (v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.01, 0.01, 0.01];
 
     // Tworzenie ufo
-    const ufo = new Ufo(position, size, [0, 0, 0], game.currentScene, game.spaceship.obj, game, Number(game.resultText.text));
+    const ufo = new Ufo(
+      position,
+      size,
+      [0, 0, 0],
+      game.currentScene,
+      game.spaceship.obj,
+      game,
+      Number(game.resultText.text)
+    );
 
     ufo.velocity = { x: velocity[0] * (1 + game.level / 10), y: velocity[1] * (1 + game.level / 10), z: 0 };
     const ufoId = game.currentScene.addGameObject(ufo);

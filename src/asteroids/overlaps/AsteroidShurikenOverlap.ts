@@ -28,14 +28,30 @@ export class AsteroidShurikenOverlap extends Overlap {
 
     if (this.asteroid.metricalSize == "l") {
       bangLarge.play();
-      const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
-      const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
+      const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "m", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a1, this.game));
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a2, this.game));
     } else if (this.asteroid.metricalSize == "m") {
       bangMedium.play();
-      const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
-      const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z]);
+      const a1 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
+      const a2 = Asteroid.createRandomAsteroidAtPosition(this.game, "s", [
+        this.asteroid.position.x,
+        this.asteroid.position.y,
+        this.asteroid.position.z,
+      ]);
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a1, this.game));
       this.game.currentScene.addOverlap(new AsteroidShurikenOverlap(this.obj1 as Shuriken, a2, this.game));
     }
@@ -47,7 +63,10 @@ export class AsteroidShurikenOverlap extends Overlap {
     this.game.currentScene!.removeGameObject(this.obj2.id);
     this.game.asteroids.delete(this.obj2.id);
 
-    this.game.spawnParticles([this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z], 8);
+    this.game.spawnParticles(
+      [this.asteroid.position.x, this.asteroid.position.y, this.asteroid.position.z],
+      8
+    );
     // Used to check the need to move to the next level
     this.game.astOnBoard -= 1;
     this.game.astCount++;

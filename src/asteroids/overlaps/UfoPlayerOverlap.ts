@@ -19,7 +19,7 @@ export class UfoPlayerOverlap extends Overlap {
     if (this.game.spaceship.obj.isBlinking) return;
     if (!this.game.currentScene) return;
     if (this.collised) return;
-    this.game.updateLifes()
+    this.game.updateLifes();
 
     this.collised = true;
     this.game.lifes--;
@@ -29,9 +29,11 @@ export class UfoPlayerOverlap extends Overlap {
     this.game.ufos.delete(this.ufo.id);
     this.game.spawnParticles([this.obj2.position.x, this.obj2.position.y, this.obj2.position.z], 8);
     if (this.game.lifes <= 0) {
-      this.game.spawnParticles([this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z], 8);
+      this.game.spawnParticles(
+        [this.spaceship.position.x, this.spaceship.position.y, this.spaceship.position.z],
+        8
+      );
       this.game.runEnd();
-    }
-    else this.game.spaceship.obj.runBlinking();
+    } else this.game.spaceship.obj.runBlinking();
   }
 }

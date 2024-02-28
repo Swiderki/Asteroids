@@ -62,7 +62,9 @@ export default class Shuriken extends PhysicalGameObject {
 
     const velocityMagnitude = 10;
     const velocityDirection = [targetPosition[0] - position[0], targetPosition[1] - position[1]];
-    const normalizedVelocity = velocityDirection.map((v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2));
+    const normalizedVelocity = velocityDirection.map(
+      (v) => v / Math.sqrt(velocityDirection[0] ** 2 + velocityDirection[1] ** 2)
+    );
     const velocity = normalizedVelocity.map((v) => v * velocityMagnitude);
     const size: [number, number, number] = [0.01, 0.01, 0.01];
 
