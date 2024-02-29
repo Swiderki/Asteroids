@@ -152,7 +152,7 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("l") && !this.isTeleporting) {
       this.teleport();
     }
-    if (this.keysPressed.has("k") && !this.isShooting && this.currentScene.id === this.gameScene) {
+    if ((this.keysPressed.has("k") || this.keysPressed.has(" ")) && !this.isShooting && this.currentScene.id === this.gameScene) {
       this.shoot();
     }
   }
