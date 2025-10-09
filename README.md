@@ -18,3 +18,7 @@ This will launch the game in development mode. Open your browser at the address 
 ## Engine Documentation
 
 The game was built using the Drake engine. You can find the full documentation here: [https://drake-docs.vercel.app/](https://drake-docs.vercel.app/)
+
+## Disclaimer
+
+You are (intentionally) on a branch with a cleared history. Switch to the main branch if you really want to learn creative commit names ;)
